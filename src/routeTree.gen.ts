@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as LockRouteImport } from './routes/lock'
 import { Route as HuddleRouteImport } from './routes/huddle'
+import { Route as BreakGlassRouteImport } from './routes/break-glass'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
@@ -22,6 +23,11 @@ const LockRoute = LockRouteImport.update({
 const HuddleRoute = HuddleRouteImport.update({
   id: '/huddle',
   path: '/huddle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BreakGlassRoute = BreakGlassRouteImport.update({
+  id: '/break-glass',
+  path: '/break-glass',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -37,12 +43,14 @@ const ApiChatRoute = ApiChatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/huddle' | '/lock' | '/api/chat'
+  fullPaths: '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/huddle' | '/lock' | '/api/chat'
-  id: '__root__' | '/' | '/huddle' | '/lock' | '/api/chat'
+  to: '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
+  id: '__root__' | '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BreakGlassRoute: typeof BreakGlassRoute
   HuddleRoute: typeof HuddleRoute
   LockRoute: typeof LockRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -85,6 +95,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HuddleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/break-glass': {
+      id: '/break-glass'
+      path: '/break-glass'
+      fullPath: '/break-glass'
+      preLoaderRoute: typeof BreakGlassRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BreakGlassRoute: BreakGlassRoute,
   HuddleRoute: HuddleRoute,
   LockRoute: LockRoute,
   ApiChatRoute: ApiChatRoute,
