@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as LockRouteImport } from './routes/lock'
 import { Route as HuddleRouteImport } from './routes/huddle'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const LockRoute = LockRouteImport.update({
+  id: '/lock',
+  path: '/lock',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const HuddleRoute = HuddleRouteImport.update({
   id: '/huddle',
   path: '/huddle',
@@ -32,35 +38,46 @@ const ApiChatRoute = ApiChatRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/huddle' | '/api/chat'
+  fullPaths: '/' | '/huddle' | '/lock' | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/huddle' | '/api/chat'
-  id: '__root__' | '/' | '/huddle' | '/api/chat'
+  to: '/' | '/huddle' | '/lock' | '/api/chat'
+  id: '__root__' | '/' | '/huddle' | '/lock' | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HuddleRoute: typeof HuddleRoute
+  LockRoute: typeof LockRoute
   ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/lock': {
+      id: '/lock'
+      path: '/lock'
+      fullPath: '/lock'
+      preLoaderRoute: typeof LockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/huddle': {
       id: '/huddle'
       path: '/huddle'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HuddleRoute: HuddleRoute,
+  LockRoute: LockRoute,
   ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
