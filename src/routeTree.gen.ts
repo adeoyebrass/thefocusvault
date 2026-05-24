@@ -13,6 +13,7 @@ import { Route as LockRouteImport } from './routes/lock'
 import { Route as HuddleRouteImport } from './routes/huddle'
 import { Route as BreakGlassRouteImport } from './routes/break-glass'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VouchVoteIdRouteImport } from './routes/vouch.$voteId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const LockRoute = LockRouteImport.update({
@@ -35,6 +36,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VouchVoteIdRoute = VouchVoteIdRouteImport.update({
+  id: '/vouch/$voteId',
+  path: '/vouch/$voteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChatRoute = ApiChatRouteImport.update({
   id: '/api/chat',
   path: '/api/chat',
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
+  fullPaths:
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/api/chat'
+    | '/vouch/$voteId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
-  id: '__root__' | '/' | '/break-glass' | '/huddle' | '/lock' | '/api/chat'
+  to:
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/api/chat'
+    | '/vouch/$voteId'
+  id:
+    | '__root__'
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/api/chat'
+    | '/vouch/$voteId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +105,7 @@ export interface RootRouteChildren {
   HuddleRoute: typeof HuddleRoute
   LockRoute: typeof LockRoute
   ApiChatRoute: typeof ApiChatRoute
+  VouchVoteIdRoute: typeof VouchVoteIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -109,6 +138,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vouch/$voteId': {
+      id: '/vouch/$voteId'
+      path: '/vouch/$voteId'
+      fullPath: '/vouch/$voteId'
+      preLoaderRoute: typeof VouchVoteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chat': {
       id: '/api/chat'
       path: '/api/chat'
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   HuddleRoute: HuddleRoute,
   LockRoute: LockRoute,
   ApiChatRoute: ApiChatRoute,
+  VouchVoteIdRoute: VouchVoteIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
