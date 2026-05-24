@@ -1,0 +1,14 @@
+# The Focus Vault
+
+> Kiosk-grade digital detox & extreme accountability app for founders. 9–5 hard lockdown. $20 fine + 10 vouchers to break glass.
+
+The Focus Vault hard-locks a user's phone Monday–Friday, 9:00 AM to 5:00 PM. Exit requires both a $20 override fine and approval from 10 designated human Vouchers. Three Gemini agents handle pre-lock contracting, voucher pre-screening, and anti-churn analysis.
+
+## Pages
+- [Home](/): Product overview, rules, and pricing.
+- [Pre-Lock Huddle](/huddle): 2-minute conversational focus-contracting with the AI agent.
+- [Lock Screen Demo](/lock): Live preview of the kiosk-mode lock screen with countdown.
+- [Break-Glass Override](/break-glass): Walk-through of the $20 fine + voucher dispatch flow.
+
+## Optional
+- [Voucher Portal (sample)](/vouch/demo-vote-001): The single-purpose page accountability partners receive.
