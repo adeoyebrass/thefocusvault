@@ -79,13 +79,19 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         content:
           "An unyielding digital safe for founders and deep-work seekers. 9–5 hard lockdown. $20 fine + 10 vouchers to break glass.",
       },
-      { property: "og:title", content: "The Focus Vault" },
+      { property: "og:title", content: "The Focus Vault — Hard lockdown for deep work" },
       {
         property: "og:description",
         content: "9–5 hard lockdown. $20 + 10 vouchers to break glass.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "The Focus Vault — Hard lockdown for deep work" },
+      { name: "description", content: "The Focus Vault is a kiosk-grade lockdown for founders and deep-work seekers. From 9 to 5, your device draws one screen and one screen only." },
+      { property: "og:description", content: "The Focus Vault is a kiosk-grade lockdown for founders and deep-work seekers. From 9 to 5, your device draws one screen and one screen only." },
+      { name: "twitter:description", content: "The Focus Vault is a kiosk-grade lockdown for founders and deep-work seekers. From 9 to 5, your device draws one screen and one screen only." },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/33c6514f-3540-443e-b42a-861354129800" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/33c6514f-3540-443e-b42a-861354129800" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
