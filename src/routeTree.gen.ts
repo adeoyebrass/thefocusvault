@@ -9,38 +9,148 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as LockRouteImport } from './routes/lock'
+import { Route as HuddleRouteImport } from './routes/huddle'
+import { Route as BreakGlassRouteImport } from './routes/break-glass'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VouchVoteIdRouteImport } from './routes/vouch.$voteId'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LockRoute = LockRouteImport.update({
+  id: '/lock',
+  path: '/lock',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HuddleRoute = HuddleRouteImport.update({
+  id: '/huddle',
+  path: '/huddle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BreakGlassRoute = BreakGlassRouteImport.update({
+  id: '/break-glass',
+  path: '/break-glass',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VouchVoteIdRoute = VouchVoteIdRouteImport.update({
+  id: '/vouch/$voteId',
+  path: '/vouch/$voteId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
+  '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
+  '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/break-glass': typeof BreakGlassRoute
+  '/huddle': typeof HuddleRoute
+  '/lock': typeof LockRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/chat': typeof ApiChatRoute
+  '/vouch/$voteId': typeof VouchVoteIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/sitemap.xml'
+    | '/api/chat'
+    | '/vouch/$voteId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/sitemap.xml'
+    | '/api/chat'
+    | '/vouch/$voteId'
+  id:
+    | '__root__'
+    | '/'
+    | '/break-glass'
+    | '/huddle'
+    | '/lock'
+    | '/sitemap.xml'
+    | '/api/chat'
+    | '/vouch/$voteId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BreakGlassRoute: typeof BreakGlassRoute
+  HuddleRoute: typeof HuddleRoute
+  LockRoute: typeof LockRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiChatRoute: typeof ApiChatRoute
+  VouchVoteIdRoute: typeof VouchVoteIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lock': {
+      id: '/lock'
+      path: '/lock'
+      fullPath: '/lock'
+      preLoaderRoute: typeof LockRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/huddle': {
+      id: '/huddle'
+      path: '/huddle'
+      fullPath: '/huddle'
+      preLoaderRoute: typeof HuddleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/break-glass': {
+      id: '/break-glass'
+      path: '/break-glass'
+      fullPath: '/break-glass'
+      preLoaderRoute: typeof BreakGlassRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +158,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vouch/$voteId': {
+      id: '/vouch/$voteId'
+      path: '/vouch/$voteId'
+      fullPath: '/vouch/$voteId'
+      preLoaderRoute: typeof VouchVoteIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BreakGlassRoute: BreakGlassRoute,
+  HuddleRoute: HuddleRoute,
+  LockRoute: LockRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiChatRoute: ApiChatRoute,
+  VouchVoteIdRoute: VouchVoteIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
