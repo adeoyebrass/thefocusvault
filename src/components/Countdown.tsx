@@ -1,18 +1,22 @@
 import { useEffect, useState } from "react";
+import { useVaultConfig } from "@/lib/vault-config";
 
 function pad(n: number) {
   return n.toString().padStart(2, "0");
 }
 
 interface Props {
-  /** end time in 24h "HH:MM", default 17:00 */
+  /** override end time "HH:MM" (defaults to vault config) */
   endTime?: string;
-  /** start time, default 09:00 */
+  /** override start time (defaults to vault config) */
   startTime?: string;
   className?: string;
 }
 
-export function Countdown({ endTime = "17:00", startTime = "09:00", className = "" }: Props) {
+export function Countdown({ endTime: endOverride, startTime: startOverride, className = "" }: Props) {
+  const [cfg] = useVaultConfig();
+  const startTime = startOverride ?? cfg.startTime;
+  const endTime = endOverride ?? cfg.endTime;
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 1000);
