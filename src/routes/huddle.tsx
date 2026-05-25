@@ -134,3 +134,52 @@ function HuddlePage() {
     </div>
   );
 }
+
+function FocusWindowEditor() {
+  const [cfg, update] = useVaultConfig();
+  const hours = focusHours(cfg.startTime, cfg.endTime);
+  const teamMode = cfg.members.length > 0;
+  const canEdit = !teamMode || cfg.isLead;
+  return (
+    <div className="mt-8 brutal-card p-4 ring-amber">
+      <div className="label mb-3 flex items-center justify-between">
+        <span>FOCUS WINDOW</span>
+        <span className="stakes-amber">{hours.toFixed(1)} h</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <label>
+          <span className="label">START</span>
+          <input
+            type="time"
+            value={cfg.startTime}
+            disabled={!canEdit}
+            onChange={(e) => update({ startTime: e.target.value })}
+            className="mt-1 w-full brutal-border bg-background px-2 py-1.5 mono text-sm outline-none disabled:opacity-50"
+          />
+        </label>
+        <label>
+          <span className="label">END</span>
+          <input
+            type="time"
+            value={cfg.endTime}
+            disabled={!canEdit}
+            onChange={(e) => update({ endTime: e.target.value })}
+            className="mt-1 w-full brutal-border bg-background px-2 py-1.5 mono text-sm outline-none disabled:opacity-50"
+          />
+        </label>
+      </div>
+      <p className="mt-3 mono text-[10px] text-muted-foreground">
+        {teamMode
+          ? canEdit
+            ? `Team mode · you're the lead. This locks ${cfg.members.length} operators.`
+            : "Team mode · only the lead can change the window."
+          : "Solo mode · this is your block today."}
+      </p>
+    </div>
+  );
+}
+
+function LockStartLabel() {
+  const [cfg] = useVaultConfig();
+  return <>{cfg.startTime}</>;
+}
