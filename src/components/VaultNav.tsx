@@ -16,6 +16,7 @@ export function VaultNav() {
         <div className="hidden items-center gap-8 md:flex">
           <Link to="/huddle" className="label hover:text-foreground">Huddle</Link>
           <Link to="/lock" className="label hover:text-foreground">Lock Demo</Link>
+          <Link to="/team" className="label hover:text-foreground">Team</Link>
           <Link to="/break-glass" className="label hover:text-foreground">Break Glass</Link>
           <Link to="/vouch/demo-vote-001" className="label hover:text-foreground">Voucher Portal</Link>
         </div>

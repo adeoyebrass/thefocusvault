@@ -4,6 +4,7 @@ import { DefaultChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { VaultNav } from "@/components/VaultNav";
+import { useVaultConfig, focusHours } from "@/lib/vault-config";
 
 export const Route = createFileRoute("/huddle")({
   component: HuddlePage,
@@ -57,12 +58,13 @@ function HuddlePage() {
             until it's defensible, then forge it into a 09:00–17:00 timeline pinned to your
             lock screen.
           </p>
-          <div className="mt-8 brutal-card p-4">
+          <FocusWindowEditor />
+          <div className="mt-6 brutal-card p-4">
             <div className="label mb-2">STATUS</div>
             <div className="mono text-sm">
               <div className="flex justify-between"><span>AGENT</span><span className="stakes-amber">ONLINE</span></div>
               <div className="flex justify-between"><span>TURNS</span><span>{messages.filter(m => m.role === "user").length}</span></div>
-              <div className="flex justify-between"><span>LOCK IN</span><span>09:00</span></div>
+              <div className="flex justify-between"><span>LOCK IN</span><span><LockStartLabel /></span></div>
             </div>
           </div>
           <Link to="/lock" className="mt-6 block label hover:text-foreground">→ skip to lock demo</Link>
@@ -131,4 +133,53 @@ function HuddlePage() {
       </div>
     </div>
   );
+}
+
+function FocusWindowEditor() {
+  const [cfg, update] = useVaultConfig();
+  const hours = focusHours(cfg.startTime, cfg.endTime);
+  const teamMode = cfg.members.length > 0;
+  const canEdit = !teamMode || cfg.isLead;
+  return (
+    <div className="mt-8 brutal-card p-4 ring-amber">
+      <div className="label mb-3 flex items-center justify-between">
+        <span>FOCUS WINDOW</span>
+        <span className="stakes-amber">{hours.toFixed(1)} h</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <label>
+          <span className="label">START</span>
+          <input
+            type="time"
+            value={cfg.startTime}
+            disabled={!canEdit}
+            onChange={(e) => update({ startTime: e.target.value })}
+            className="mt-1 w-full brutal-border bg-background px-2 py-1.5 mono text-sm outline-none disabled:opacity-50"
+          />
+        </label>
+        <label>
+          <span className="label">END</span>
+          <input
+            type="time"
+            value={cfg.endTime}
+            disabled={!canEdit}
+            onChange={(e) => update({ endTime: e.target.value })}
+            className="mt-1 w-full brutal-border bg-background px-2 py-1.5 mono text-sm outline-none disabled:opacity-50"
+          />
+        </label>
+      </div>
+      <p className="mt-3 mono text-[10px] text-muted-foreground">
+        {teamMode
+          ? canEdit
+            ? `Team mode · you're the lead. This locks ${cfg.members.length} operators.`
+            : "Team mode · only the lead can change the window."
+          : "Solo mode · this is your block today."}
+      </p>
+    </div>
+  );
+}
+
+function LockStartLabel() {
+  const [cfg] = useVaultConfig();
+  return <>{cfg.startTime}</>;
 }

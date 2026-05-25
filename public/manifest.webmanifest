@@ -1,0 +1,19 @@
+{
+  "name": "The Focus Vault",
+  "short_name": "Focus Vault",
+  "description": "Kiosk-grade lockdown for deep work. 9–5 hard lock. $20 + 10 vouchers to break glass.",
+  "start_url": "/lock",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}
