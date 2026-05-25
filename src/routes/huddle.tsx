@@ -4,6 +4,7 @@ import { DefaultChatTransport } from "ai";
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { VaultNav } from "@/components/VaultNav";
+import { useVaultConfig, focusHours } from "@/lib/vault-config";
 
 export const Route = createFileRoute("/huddle")({
   component: HuddlePage,
@@ -57,12 +58,13 @@ function HuddlePage() {
             until it's defensible, then forge it into a 09:00–17:00 timeline pinned to your
             lock screen.
           </p>
-          <div className="mt-8 brutal-card p-4">
+          <FocusWindowEditor />
+          <div className="mt-6 brutal-card p-4">
             <div className="label mb-2">STATUS</div>
             <div className="mono text-sm">
               <div className="flex justify-between"><span>AGENT</span><span className="stakes-amber">ONLINE</span></div>
               <div className="flex justify-between"><span>TURNS</span><span>{messages.filter(m => m.role === "user").length}</span></div>
-              <div className="flex justify-between"><span>LOCK IN</span><span>09:00</span></div>
+              <div className="flex justify-between"><span>LOCK IN</span><span><LockStartLabel /></span></div>
             </div>
           </div>
           <Link to="/lock" className="mt-6 block label hover:text-foreground">→ skip to lock demo</Link>
