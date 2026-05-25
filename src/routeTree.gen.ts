@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as LockRouteImport } from './routes/lock'
 import { Route as HuddleRouteImport } from './routes/huddle'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VouchVoteIdRouteImport } from './routes/vouch.$voteId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/team': typeof TeamRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -68,6 +75,7 @@ export interface FileRoutesByTo {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/team': typeof TeamRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -78,6 +86,7 @@ export interface FileRoutesById {
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/team': typeof TeamRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -89,6 +98,7 @@ export interface FileRouteTypes {
     | '/huddle'
     | '/lock'
     | '/sitemap.xml'
+    | '/team'
     | '/api/chat'
     | '/vouch/$voteId'
   fileRoutesByTo: FileRoutesByTo
@@ -98,6 +108,7 @@ export interface FileRouteTypes {
     | '/huddle'
     | '/lock'
     | '/sitemap.xml'
+    | '/team'
     | '/api/chat'
     | '/vouch/$voteId'
   id:
@@ -107,6 +118,7 @@ export interface FileRouteTypes {
     | '/huddle'
     | '/lock'
     | '/sitemap.xml'
+    | '/team'
     | '/api/chat'
     | '/vouch/$voteId'
   fileRoutesById: FileRoutesById
@@ -117,12 +129,20 @@ export interface RootRouteChildren {
   HuddleRoute: typeof HuddleRoute
   LockRoute: typeof LockRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TeamRoute: typeof TeamRoute
   ApiChatRoute: typeof ApiChatRoute
   VouchVoteIdRoute: typeof VouchVoteIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sitemap.xml': {
       id: '/sitemap.xml'
       path: '/sitemap.xml'
@@ -181,6 +201,7 @@ const rootRouteChildren: RootRouteChildren = {
   HuddleRoute: HuddleRoute,
   LockRoute: LockRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TeamRoute: TeamRoute,
   ApiChatRoute: ApiChatRoute,
   VouchVoteIdRoute: VouchVoteIdRoute,
 }
