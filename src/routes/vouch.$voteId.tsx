@@ -1,5 +1,10 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth-context";
+import { VaultNav } from "@/components/VaultNav";
+import { getVote, respondToVote } from "@/lib/vault-server.functions";
 
 export const Route = createFileRoute("/vouch/$voteId")({
   component: VoucherPortal,
@@ -13,103 +18,125 @@ export const Route = createFileRoute("/vouch/$voteId")({
 
 function VoucherPortal() {
   const { voteId } = Route.useParams();
-  const [decision, setDecision] = useState<null | "VOUCH" | "KEEP">(null);
+  const { user, loading } = useAuth();
+  const nav = useNavigate();
+  useEffect(() => {
+    if (!loading && !user) nav({ to: "/login" });
+  }, [user, loading, nav]);
 
-  const briefing = {
-    user: "Marcus L.",
-    streak: 23,
-    timeLeft: "3h 12m",
-    classification: "QUESTIONABLE",
-    paraphrase:
-      "User says a 'critical client call' was just scheduled by a prospect and refuses to wait until 17:00.",
-    signals: [
-      "No supporting evidence (calendar invite, email) provided.",
-      "User has triggered 3 overrides in the last 14 days, 2 in the same band.",
-      "Prospect identity not disclosed.",
-    ],
-    recommendation:
-      "Likely deferrable. Consider whether the call can be rescheduled by 2 hours without commercial damage.",
-  };
+  const qc = useQueryClient();
+  const fetchVote = useServerFn(getVote);
+  const respond = useServerFn(respondToVote);
 
-  if (decision) {
-    return (
-      <div className="relative min-h-screen flex items-center justify-center px-6">
-        <div className="relative z-10 max-w-md text-center brutal-card p-10">
-          <div className="label mb-2 stakes-amber">VOTE RECORDED</div>
-          <h1 className="font-display text-4xl font-bold">
-            {decision === "VOUCH" ? "RELEASE REQUESTED." : "KEEP LOCKED."}
-          </h1>
-          <p className="mt-4 text-sm text-muted-foreground">
-            Your vote was sent to the Vault. {decision === "VOUCH" ? "5 more vouchers needed for release." : "5 more 'keep locked' votes will deny the override."}
-          </p>
-          <div className="mt-6 mono text-xs text-muted-foreground">VOTE ID · {voteId}</div>
-        </div>
-      </div>
-    );
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["vote", voteId],
+    queryFn: () => fetchVote({ data: { id: voteId } }),
+    enabled: !!user,
+  });
+
+  const [busy, setBusy] = useState(false);
+  const [comment, setComment] = useState("");
+
+  async function cast(decision: "yes" | "no") {
+    setBusy(true);
+    try {
+      await respond({ data: { vote_id: voteId, decision, comment: comment || undefined } });
+      qc.invalidateQueries({ queryKey: ["vote", voteId] });
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
-    <div className="relative min-h-screen px-4 py-10">
-      <div className="relative z-10 mx-auto max-w-2xl">
+    <div className="relative min-h-screen">
+      <VaultNav />
+      <div className="relative z-10 mx-auto max-w-2xl px-4 py-12">
         <div className="flex items-center gap-3 label">
           <span className="inline-block h-1.5 w-1.5 bg-stakes-crimson pulse-stakes" />
-          INCOMING VOUCH REQUEST · {voteId}
-        </div>
-        <h1 className="mt-4 font-display text-4xl font-bold leading-tight md:text-5xl">
-          {briefing.user} wants out of the Vault early.
-        </h1>
-        <p className="mt-3 text-muted-foreground">
-          You are 1 of 10 Vouchers. Read the briefing. Vote with intent.
-        </p>
-
-        <div className="mt-8 grid grid-cols-3 gap-px bg-border">
-          <div className="bg-background p-4">
-            <div className="label">STREAK</div>
-            <div className="mono text-2xl font-bold">{briefing.streak}d</div>
-          </div>
-          <div className="bg-background p-4">
-            <div className="label">TIME LEFT</div>
-            <div className="mono text-2xl font-bold stakes-amber">{briefing.timeLeft}</div>
-          </div>
-          <div className="bg-background p-4">
-            <div className="label">SIGNAL</div>
-            <div className="mono text-lg font-bold stakes-crimson">{briefing.classification}</div>
-          </div>
+          VOUCH REQUEST · {voteId.slice(0, 8)}
         </div>
 
-        <div className="mt-6 brutal-card p-6">
-          <div className="label mb-2">AI PRE-SCREENER · OBJECTIVE BRIEFING</div>
-          <p className="text-sm leading-relaxed"><span className="label mr-2">REASON</span>{briefing.paraphrase}</p>
-          <ul className="mt-4 space-y-1.5 text-sm leading-relaxed">
-            {briefing.signals.map((s) => (
-              <li key={s} className="flex gap-3">
-                <span className="stakes-crimson mono">▸</span>
-                <span>{s}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 text-sm leading-relaxed border-t border-border pt-4">
-            <span className="label mr-2">RECOMMENDATION</span>{briefing.recommendation}
-          </p>
-        </div>
+        {isLoading && <div className="mt-8 label pulse-stakes">LOADING BRIEFING…</div>}
+        {error && (
+          <div className="mt-8 brutal-card p-6 ring-crimson">
+            <div className="label stakes-crimson mb-1">CANNOT VIEW</div>
+            <div className="mono text-sm">{(error as Error).message}</div>
+            <p className="mt-3 text-sm text-muted-foreground">
+              You can only see a vote if you're the owner, on the owner's team roster, or an admin.
+            </p>
+          </div>
+        )}
 
-        <div className="mt-8 grid gap-3 md:grid-cols-2">
-          <button
-            onClick={() => setDecision("VOUCH")}
-            className="brutal-border bg-stakes-amber py-6 font-display text-xl font-bold uppercase tracking-tight hover:opacity-90"
-          >
-            ✓ VOUCH · APPROVE RELEASE
-          </button>
-          <button
-            onClick={() => setDecision("KEEP")}
-            className="brutal-border bg-stakes-crimson py-6 font-display text-xl font-bold uppercase tracking-tight hover:opacity-90"
-          >
-            ✕ KEEP LOCKED
-          </button>
-        </div>
-        <p className="mt-6 mono text-[10px] text-muted-foreground text-center">
-          Your vote is logged with timestamp & device fingerprint. The Vault never reveals who voted what.
-        </p>
+        {data && (
+          <>
+            <h1 className="mt-4 font-display text-4xl font-bold leading-tight md:text-5xl">
+              {data.isOwner ? "Your" : `${data.owner?.display_name ?? "An operator"}'s`} break-glass request.
+            </h1>
+            <p className="mt-3 text-muted-foreground">
+              Status: <span className={
+                data.vote.status === "approved" ? "stakes-amber" :
+                data.vote.status === "denied" ? "stakes-crimson" : ""
+              }>{data.vote.status.toUpperCase()}</span> · quorum {data.vote.required_yes} yes.
+            </p>
+
+            <div className="mt-6 grid grid-cols-3 gap-px bg-border">
+              <div className="bg-background p-4">
+                <div className="label">YES</div>
+                <div className="mono text-2xl font-bold stakes-amber">{data.yes}</div>
+              </div>
+              <div className="bg-background p-4">
+                <div className="label">NO</div>
+                <div className="mono text-2xl font-bold stakes-crimson">{data.no}</div>
+              </div>
+              <div className="bg-background p-4">
+                <div className="label">QUORUM</div>
+                <div className="mono text-2xl font-bold">{data.vote.required_yes}</div>
+              </div>
+            </div>
+
+            <div className="mt-6 brutal-card p-6">
+              <div className="label mb-2">STATED REASON</div>
+              <p className="text-sm leading-relaxed whitespace-pre-wrap">{data.vote.reason}</p>
+            </div>
+
+            {!data.isOwner && data.vote.status === "pending" && (
+              <div className="mt-6 brutal-card p-6">
+                <div className="label mb-3">
+                  {data.myResponse ? `YOU VOTED · ${data.myResponse.decision.toUpperCase()}` : "CAST YOUR VOTE"}
+                </div>
+                <textarea
+                  value={comment}
+                  onChange={(e) => setComment(e.target.value)}
+                  placeholder="Optional comment (private to the owner & admins)"
+                  rows={3}
+                  className="w-full brutal-border bg-background p-3 text-sm outline-none"
+                />
+                <div className="mt-4 grid gap-3 md:grid-cols-2">
+                  <button
+                    disabled={busy}
+                    onClick={() => cast("yes")}
+                    className="brutal-border bg-stakes-amber py-4 font-display text-lg font-bold uppercase hover:opacity-90 disabled:opacity-50"
+                  >
+                    ✓ VOUCH · RELEASE
+                  </button>
+                  <button
+                    disabled={busy}
+                    onClick={() => cast("no")}
+                    className="brutal-border bg-stakes-crimson py-4 font-display text-lg font-bold uppercase hover:opacity-90 disabled:opacity-50"
+                  >
+                    ✕ KEEP LOCKED
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {data.isOwner && (
+              <p className="mt-6 mono text-xs text-muted-foreground">
+                You can't vote on your own request. Wait for your roster.
+              </p>
+            )}
+          </>
+        )}
       </div>
     </div>
   );

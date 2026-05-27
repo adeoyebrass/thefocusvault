@@ -1,17 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { VaultNav } from "@/components/VaultNav";
 import { Countdown } from "@/components/Countdown";
+import heroImage from "@/assets/hero-vault.jpg";
 
 export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
       { title: "The Focus Vault — Hard lockdown for deep work" },
-      {
-        name: "description",
-        content:
-          "An unyielding digital safe. 9–5 hard lockdown. $20 fine + 10 vouchers to break glass. For founders who are tired of pretending willpower works.",
-      },
+      { name: "description", content: "An unyielding digital safe. 9–5 hard lockdown. $20 fine + team vouchers to break glass. For founders who are tired of pretending willpower works." },
+      { property: "og:image", content: "/og-image.jpg" },
     ],
   }),
 });
@@ -22,12 +20,12 @@ function Landing() {
       <VaultNav />
 
       {/* HERO */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-20 pb-32 md:pt-32">
-        <div className="grid gap-12 md:grid-cols-12 md:gap-16">
+      <section className="relative z-10 mx-auto max-w-7xl px-6 pt-16 pb-24 md:pt-24">
+        <div className="grid gap-12 md:grid-cols-12 md:gap-16 items-center">
           <div className="md:col-span-7">
             <div className="label mb-6 flex items-center gap-3">
               <span className="inline-block h-1.5 w-1.5 bg-stakes-amber pulse-stakes" />
-              SYSTEM ARMED · 9:00 → 17:00 MON–FRI
+              SYSTEM ARMED · 9:00 → 17:00
             </div>
             <h1 className="font-display text-5xl font-bold leading-[0.95] tracking-tight md:text-7xl lg:text-8xl">
               YOUR PHONE,<br />
@@ -35,31 +33,19 @@ function Landing() {
               BY YOU.
             </h1>
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground">
-              The Focus Vault is a kiosk-grade lockdown for founders and deep-work seekers. From
-              9 to 5, your device draws one screen and one screen only. To break out early you
-              pay <span className="stakes-crimson font-semibold">$20</span> and convince{" "}
-              <span className="stakes-crimson font-semibold">10 humans</span> you're not lying to yourself.
+              A kiosk-grade lockdown for founders and deep-work seekers. From 9 to 5, your device
+              draws one screen. To break out early you pay <span className="stakes-crimson font-semibold">$20</span> and convince your <span className="stakes-crimson font-semibold">team</span> you're not lying to yourself.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <Link
-                to="/huddle"
-                className="brutal-border bg-foreground px-6 py-4 mono text-xs font-bold uppercase tracking-widest text-background hover:opacity-90"
-              >
+              <Link to="/login" className="brutal-border bg-foreground px-6 py-4 mono text-xs font-bold uppercase tracking-widest text-background hover:opacity-90">
                 Sign the Contract → $10/mo
               </Link>
-              <Link
-                to="/lock"
-                className="brutal-border bg-transparent px-6 py-4 mono text-xs font-bold uppercase tracking-widest hover:bg-secondary"
-              >
+              <Link to="/lock" className="brutal-border bg-transparent px-6 py-4 mono text-xs font-bold uppercase tracking-widest hover:bg-secondary">
                 See the Lock Screen
               </Link>
             </div>
             <div className="mt-12 grid grid-cols-3 gap-6 border-t border-border pt-8">
-              {[
-                ["8h", "HARD-LOCK BLOCK"],
-                ["$20", "OVERRIDE FINE"],
-                ["10", "VOUCHERS REQUIRED"],
-              ].map(([n, l]) => (
+              {[["8h", "HARD-LOCK BLOCK"], ["$20", "OVERRIDE FINE"], ["3", "VOUCHES TO RELEASE"]].map(([n, l]) => (
                 <div key={l}>
                   <div className="mono text-3xl font-bold">{n}</div>
                   <div className="label mt-1">{l}</div>
@@ -69,21 +55,16 @@ function Landing() {
           </div>
 
           <div className="md:col-span-5">
-            <div className="brutal-card scanline p-8 ring-amber">
+            <img
+              src={heroImage}
+              alt="A smartphone sealed inside a translucent acrylic vault on a brutalist concrete desk"
+              width={1600}
+              height={1024}
+              className="w-full brutal-border aspect-[16/10] object-cover"
+            />
+            <div className="mt-6 brutal-card scanline p-6 ring-amber">
               <div className="label mb-2">LIVE · KIOSK PREVIEW</div>
               <Countdown />
-              <div className="mt-8 brutal-border bg-background p-4">
-                <div className="label mb-2">TODAY'S CONTRACT</div>
-                <p className="font-display text-xl font-bold leading-tight">
-                  Ship the v0 of the auth flow. Nothing else exists.
-                </p>
-              </div>
-              <button
-                disabled
-                className="mt-6 w-full brutal-border bg-stakes-crimson py-3 mono text-xs font-bold uppercase tracking-widest opacity-60"
-              >
-                ⚠  Break Glass · $20 + 10 votes
-              </button>
             </div>
           </div>
         </div>
