@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
+import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
 
 const HUDDLE_SYSTEM = `You are THE FOCUS CONTRACTING AGENT for "The Focus Vault" — an extreme accountability app that hard-locks a user's phone from 9:00 AM to 5:00 PM.
@@ -25,33 +26,95 @@ Given the user's reason, produce an OBJECTIVE briefing block for the Vouchers. O
 
 Do not moralize. Do not address the user. No preamble.`;
 
+// Limit payload size to prevent cost-amplification and prompt-injection abuse.
+const MAX_MESSAGES = 30;
+const MAX_TEXT_PER_PART = 4000;
+
+const PartSchema = z.object({
+  type: z.string().max(40),
+  text: z.string().max(MAX_TEXT_PER_PART).optional(),
+}).passthrough();
+
+const MessageSchema = z.object({
+  id: z.string().max(120).optional(),
+  role: z.enum(["system", "user", "assistant"]),
+  parts: z.array(PartSchema).max(20),
+}).passthrough();
+
+const BodySchema = z.object({
+  messages: z.array(MessageSchema).min(1).max(MAX_MESSAGES),
+  mode: z.enum(["huddle", "prescreen"]).optional(),
+});
+
+// Naive in-memory per-IP rate limit. Bounded map size to avoid unbounded growth.
+const RATE_WINDOW_MS = 60_000;
+const RATE_MAX = 20;
+const hits = new Map<string, { count: number; reset: number }>();
+
+function rateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = hits.get(ip);
+  if (!entry || entry.reset < now) {
+    if (hits.size > 1000) hits.clear();
+    hits.set(ip, { count: 1, reset: now + RATE_WINDOW_MS });
+    return true;
+  }
+  entry.count += 1;
+  return entry.count <= RATE_MAX;
+}
+
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const body = (await request.json()) as {
-          messages?: unknown;
-          mode?: "huddle" | "prescreen";
-        };
-        if (!Array.isArray(body.messages)) {
-          return new Response("messages required", { status: 400 });
+        // Same-origin guard: only accept browser calls from this app's own origin.
+        const origin = request.headers.get("origin");
+        const url = new URL(request.url);
+        if (origin) {
+          try {
+            if (new URL(origin).host !== url.host) {
+              return new Response("Forbidden", { status: 403 });
+            }
+          } catch {
+            return new Response("Forbidden", { status: 403 });
+          }
         }
+
+        const ip =
+          request.headers.get("cf-connecting-ip") ??
+          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
+          "unknown";
+        if (!rateLimit(ip)) {
+          return new Response("Too many requests", { status: 429 });
+        }
+
+        let raw: unknown;
+        try {
+          raw = await request.json();
+        } catch {
+          return new Response("Invalid JSON", { status: 400 });
+        }
+
+        const parsed = BodySchema.safeParse(raw);
+        if (!parsed.success) {
+          return new Response("Invalid request payload", { status: 400 });
+        }
+
         const key = process.env.LOVABLE_API_KEY;
-        if (!key) return new Response("missing LOVABLE_API_KEY", { status: 500 });
+        if (!key) return new Response("Server misconfigured", { status: 500 });
 
         const gateway = createLovableAiGatewayProvider(key);
         const model = gateway("google/gemini-3-flash-preview");
-        const system = body.mode === "prescreen" ? PRESCREEN_SYSTEM : HUDDLE_SYSTEM;
+        const system = parsed.data.mode === "prescreen" ? PRESCREEN_SYSTEM : HUDDLE_SYSTEM;
+        const messages = parsed.data.messages as unknown as UIMessage[];
 
         const result = streamText({
           model,
           system,
-          messages: await convertToModelMessages(body.messages as UIMessage[]),
+          messages: await convertToModelMessages(messages),
         });
 
-        return result.toUIMessageStreamResponse({
-          originalMessages: body.messages as UIMessage[],
-        });
+        return result.toUIMessageStreamResponse({ originalMessages: messages });
       },
     },
   },
