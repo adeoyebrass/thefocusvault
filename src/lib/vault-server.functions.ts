@@ -171,25 +171,103 @@ export const getAdminAnalytics = createServerFn({ method: "GET" })
     const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
     if (!isAdmin) throw new Error("Admin only.");
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
-    const [{ count: users }, { count: sessions }, { count: votes }, { data: pending }] =
-      await Promise.all([
-        supabase.from("profiles").select("*", { count: "exact", head: true }),
-        supabase
-          .from("focus_sessions")
-          .select("*", { count: "exact", head: true })
-          .gte("started_at", since),
-        supabase.from("vouch_votes").select("*", { count: "exact", head: true }).gte("created_at", since),
-        supabase
-          .from("vouch_votes")
-          .select("id, reason, owner_id, created_at, required_yes")
-          .eq("status", "pending")
-          .order("created_at", { ascending: false })
-          .limit(20),
-      ]);
+    const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [
+      { count: users },
+      { count: sessions },
+      { count: votes },
+      { data: pending },
+      { data: allVotes30 },
+      { data: responses30 },
+      { data: history },
+    ] = await Promise.all([
+      supabase.from("profiles").select("*", { count: "exact", head: true }),
+      supabase.from("focus_sessions").select("*", { count: "exact", head: true }).gte("started_at", since),
+      supabase.from("vouch_votes").select("*", { count: "exact", head: true }).gte("created_at", since),
+      supabase
+        .from("vouch_votes")
+        .select("id, reason, owner_id, created_at, required_yes")
+        .eq("status", "pending")
+        .order("created_at", { ascending: false })
+        .limit(20),
+      supabase
+        .from("vouch_votes")
+        .select("id, status, created_at, resolved_at")
+        .gte("created_at", since30),
+      supabase
+        .from("vouch_responses")
+        .select("voucher_id, decision, created_at")
+        .gte("created_at", since30),
+      supabase
+        .from("vouch_votes")
+        .select("id, status, reason, owner_id, created_at, resolved_at")
+        .neq("status", "pending")
+        .order("resolved_at", { ascending: false })
+        .limit(15),
+    ]);
+
+    // Quorum outcomes
+    const approved = (allVotes30 ?? []).filter((v) => v.status === "approved").length;
+    const denied = (allVotes30 ?? []).filter((v) => v.status === "denied").length;
+    const stillPending = (allVotes30 ?? []).filter((v) => v.status === "pending").length;
+    const resolved = (allVotes30 ?? []).filter((v) => v.resolved_at);
+    const avgResolveMin =
+      resolved.length === 0
+        ? 0
+        : Math.round(
+            resolved.reduce(
+              (acc, v) =>
+                acc +
+                (new Date(v.resolved_at!).getTime() - new Date(v.created_at).getTime()) / 60000,
+              0,
+            ) / resolved.length,
+          );
+
+    // Voucher activity: top responders
+    const tally = new Map<string, { yes: number; no: number }>();
+    for (const r of responses30 ?? []) {
+      const t = tally.get(r.voucher_id) ?? { yes: 0, no: 0 };
+      if (r.decision === "yes") t.yes += 1;
+      else if (r.decision === "no") t.no += 1;
+      tally.set(r.voucher_id, t);
+    }
+    const topVoucherIds = Array.from(tally.entries())
+      .sort((a, b) => b[1].yes + b[1].no - (a[1].yes + a[1].no))
+      .slice(0, 5);
+    let voucherProfiles: Array<{ user_id: string; display_name: string | null; email: string | null }> = [];
+    const ownerIds = Array.from(
+      new Set([
+        ...topVoucherIds.map(([id]) => id),
+        ...(history ?? []).map((h) => h.owner_id),
+      ]),
+    );
+    if (ownerIds.length) {
+      const { data } = await supabase
+        .from("profiles")
+        .select("user_id, display_name, email")
+        .in("user_id", ownerIds);
+      voucherProfiles = data ?? [];
+    }
+    const topVouchers = topVoucherIds.map(([id, t]) => ({
+      user_id: id,
+      yes: t.yes,
+      no: t.no,
+      total: t.yes + t.no,
+      profile: voucherProfiles.find((p) => p.user_id === id) ?? null,
+    }));
+    const overrideHistory = (history ?? []).map((h) => ({
+      ...h,
+      owner: voucherProfiles.find((p) => p.user_id === h.owner_id) ?? null,
+    }));
+
     return {
       users: users ?? 0,
       sessionsLast7d: sessions ?? 0,
       votesLast7d: votes ?? 0,
       pending: pending ?? [],
+      outcomes: { approved, denied, pending: stillPending, avgResolveMin, totalResponses: (responses30 ?? []).length },
+      topVouchers,
+      overrideHistory,
     };
   });
