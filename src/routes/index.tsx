@@ -169,8 +169,13 @@ function Landing() {
       </section>
 
       <footer className="relative z-10 border-t border-border">
-        <div className="mx-auto max-w-7xl px-6 py-8 flex justify-between mono text-xs text-muted-foreground">
+        <div className="mx-auto max-w-7xl px-6 py-8 flex flex-col md:flex-row gap-4 justify-between items-center mono text-xs text-muted-foreground">
           <span>© THE FOCUS VAULT · KIOSK GRADE</span>
+          <div className="flex items-center gap-5">
+            <a href="https://facebook.com/focusvault" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="hover:text-foreground uppercase tracking-widest">Facebook</a>
+            <a href="https://youtube.com/@focusvault" target="_blank" rel="noopener noreferrer" aria-label="YouTube" className="hover:text-foreground uppercase tracking-widest">YouTube</a>
+            <a href="https://twitter.com/focusvault" target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="hover:text-foreground uppercase tracking-widest">Twitter</a>
+          </div>
           <span>STATUS: ARMED</span>
         </div>
       </footer>
