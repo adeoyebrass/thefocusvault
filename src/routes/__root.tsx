@@ -4,12 +4,13 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { InstallPrompt } from "@/components/InstallPrompt";
-import { AuthProvider } from "@/lib/auth-context";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { supabase } from "@/integrations/supabase/client";
 
 import appCss from "../styles.css?url";
@@ -102,13 +103,47 @@ function AuthInvalidator() {
   return null;
 }
 
+const PUBLIC_PATHS = new Set(["/login", "/signup"]);
+
+function AuthGate() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isPublic = PUBLIC_PATHS.has(pathname);
+
+  useEffect(() => {
+    if (loading) return;
+    if (!user && !isPublic) {
+      router.navigate({ to: "/login", replace: true });
+    }
+  }, [loading, user, isPublic, router]);
+
+  if (loading) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <div className="label">§ AUTH · CHECKING</div>
+      </div>
+    );
+  }
+
+  if (!user && !isPublic) {
+    return (
+      <div className="grid min-h-screen place-items-center bg-background">
+        <div className="label">§ REDIRECTING TO LOGIN</div>
+      </div>
+    );
+  }
+
+  return <Outlet />;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <AuthInvalidator />
-        <Outlet />
+        <AuthGate />
         <InstallPrompt />
       </AuthProvider>
     </QueryClientProvider>
