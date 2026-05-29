@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function VaultNav() {
   const { user, signOut } = useAuth();
@@ -22,24 +23,27 @@ export function VaultNav() {
           <Link to="/break-glass" className="label hover:text-foreground">Break Glass</Link>
           {user && <Link to="/admin" className="label hover:text-foreground">Admin</Link>}
         </div>
-        {user ? (
-          <div className="flex items-center gap-3">
-            <span className="hidden md:inline mono text-[10px] text-muted-foreground">{user.email}</span>
-            <button
-              onClick={signOut}
-              className="brutal-border px-3 py-2 mono text-[10px] font-bold uppercase tracking-widest hover:bg-secondary"
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
+          {user ? (
+            <>
+              <span className="hidden md:inline mono text-[10px] text-muted-foreground">{user.email}</span>
+              <button
+                onClick={signOut}
+                className="brutal-border px-3 py-2 mono text-[10px] font-bold uppercase tracking-widest hover:bg-secondary"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <Link
+              to="/login"
+              className="brutal-border bg-foreground px-4 py-2 mono text-xs font-bold uppercase tracking-wider text-background hover:opacity-90"
             >
-              Sign out
-            </button>
-          </div>
-        ) : (
-          <Link
-            to="/login"
-            className="brutal-border bg-foreground px-4 py-2 mono text-xs font-bold uppercase tracking-wider text-background hover:opacity-90"
-          >
-            Sign in
-          </Link>
-        )}
+              Sign in
+            </Link>
+          )}
+        </div>
       </div>
     </nav>
   );
