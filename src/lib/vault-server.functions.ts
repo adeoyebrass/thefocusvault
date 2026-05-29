@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 // ---------- Team ----------
 export const listMyTeam = createServerFn({ method: "GET" })
@@ -32,7 +33,7 @@ export const addTeamMember = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ email: z.string().email() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
-    const { data: profile } = await supabase
+    const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("user_id")
       .eq("email", data.email.toLowerCase())
