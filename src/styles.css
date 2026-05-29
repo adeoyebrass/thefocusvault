@@ -90,44 +90,45 @@
 /* LIGHT MODE — paper-white brutalism. Same structural language, inverted canvas.
  * Applied by toggling `.light` on <html>. Accents stay; surfaces flip. */
 .light {
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.16 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0 0);
-  --primary: oklch(0.16 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.94 0 0);
-  --secondary-foreground: oklch(0.16 0 0);
-  --muted: oklch(0.95 0 0);
-  --muted-foreground: oklch(0.45 0 0);
-  --accent: oklch(0.92 0 0);
-  --accent-foreground: oklch(0.16 0 0);
-  --destructive: oklch(0.55 0.22 25);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.84 0 0);
-  --input: oklch(0.92 0 0);
-  --ring: oklch(0.55 0.16 75);
+  /* army green canvas — olive drab, brutalist field-manual feel */
+  --background: oklch(0.5 0.055 125);
+  --foreground: oklch(0.97 0.02 95);
+  --card: oklch(0.44 0.05 125);
+  --card-foreground: oklch(0.97 0.02 95);
+  --popover: oklch(0.44 0.05 125);
+  --popover-foreground: oklch(0.97 0.02 95);
+  --primary: oklch(0.97 0.02 95);
+  --primary-foreground: oklch(0.32 0.05 125);
+  --secondary: oklch(0.42 0.05 125);
+  --secondary-foreground: oklch(0.97 0.02 95);
+  --muted: oklch(0.45 0.045 125);
+  --muted-foreground: oklch(0.85 0.03 95);
+  --accent: oklch(0.4 0.05 125);
+  --accent-foreground: oklch(0.97 0.02 95);
+  --destructive: oklch(0.6 0.24 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.36 0.04 125);
+  --input: oklch(0.42 0.05 125);
+  --ring: oklch(0.82 0.17 78);
 
-  --amber: oklch(0.68 0.18 70);
-  --crimson: oklch(0.55 0.24 22);
-  --steel: oklch(0.68 0 0);
+  --amber: oklch(0.85 0.17 82);
+  --crimson: oklch(0.62 0.24 22);
+  --steel: oklch(0.6 0.03 125);
 
-  --chart-1: oklch(0.68 0.18 70);
-  --chart-2: oklch(0.55 0.24 22);
-  --chart-3: oklch(0.45 0 0);
-  --chart-4: oklch(0.68 0 0);
-  --chart-5: oklch(0.25 0 0);
+  --chart-1: oklch(0.85 0.17 82);
+  --chart-2: oklch(0.62 0.24 22);
+  --chart-3: oklch(0.75 0.05 125);
+  --chart-4: oklch(0.55 0.05 125);
+  --chart-5: oklch(0.97 0.02 95);
 
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.16 0 0);
-  --sidebar-primary: oklch(0.16 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.94 0 0);
-  --sidebar-accent-foreground: oklch(0.16 0 0);
-  --sidebar-border: oklch(0.84 0 0);
-  --sidebar-ring: oklch(0.55 0.16 75);
+  --sidebar: oklch(0.5 0.055 125);
+  --sidebar-foreground: oklch(0.97 0.02 95);
+  --sidebar-primary: oklch(0.97 0.02 95);
+  --sidebar-primary-foreground: oklch(0.32 0.05 125);
+  --sidebar-accent: oklch(0.42 0.05 125);
+  --sidebar-accent-foreground: oklch(0.97 0.02 95);
+  --sidebar-border: oklch(0.36 0.04 125);
+  --sidebar-ring: oklch(0.82 0.17 78);
 }
 
 @layer base {
