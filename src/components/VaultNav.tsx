@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function VaultNav() {
   const { user, signOut } = useAuth();
