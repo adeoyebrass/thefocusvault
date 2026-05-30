@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth-context";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import logo from "@/assets/logo.png";
 
 export function VaultNav() {
   const { user, signOut } = useAuth();
@@ -8,20 +9,19 @@ export function VaultNav() {
     <nav className="relative z-10 brutal-border border-x-0 border-t-0 bg-background/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
         <Link to="/" className="flex items-center gap-3">
-          <div className="grid h-8 w-8 place-items-center bg-foreground text-background mono font-bold">
-            FV
-          </div>
+          <img src={logo} alt="The Focus Vault" className="h-9 w-9" />
           <div className="flex flex-col leading-none">
             <span className="font-display text-sm font-bold tracking-tight">THE FOCUS VAULT</span>
-            <span className="label">v0 · kiosk grade</span>
+            <span className="label">deep work · kiosk grade</span>
           </div>
         </Link>
-        <div className="hidden items-center gap-6 md:flex">
-          <Link to="/huddle" className="label hover:text-foreground">Huddle</Link>
-          <Link to="/lock" className="label hover:text-foreground">Lock</Link>
-          <Link to="/team" className="label hover:text-foreground">Team</Link>
-          <Link to="/break-glass" className="label hover:text-foreground">Break Glass</Link>
-          {user && <Link to="/admin" className="label hover:text-foreground">Admin</Link>}
+        <div className="hidden items-center gap-6 lg:flex">
+          <Link to="/" className="label hover:text-foreground">Home</Link>
+          <Link to="/about" className="label hover:text-foreground">About</Link>
+          <Link to="/videos" className="label hover:text-foreground">Videos</Link>
+          <Link to="/blog" className="label hover:text-foreground">Blog</Link>
+          <Link to="/partner" className="label hover:text-foreground">Partner</Link>
+          {user && <Link to="/huddle" className="label hover:text-foreground">App</Link>}
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />
