@@ -57,21 +57,15 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { name: "theme-color", content: "#000000" },
       { title: "The Focus Vault — Hard lockdown for deep work" },
-      { name: "description", content: "Based on the product details provided in **image.png**, here is a short description for **The Focus Vault**:
-
-**The Focus Vault** is an absolute environmental i" },
+      { name: "description", content: "The Focus Vault is an absolute environmental isolation tool designed to eliminate digital distractions and defeat the \"myth of the quick peek.\"" },
       { property: "og:title", content: "The Focus Vault — Hard lockdown for deep work" },
-      { property: "og:description", content: "Based on the product details provided in **image.png**, here is a short description for **The Focus Vault**:
-
-**The Focus Vault** is an absolute environmental i" },
+      { property: "og:description", content: "The Focus Vault is an absolute environmental isolation tool designed to eliminate digital distractions and defeat the \"myth of the quick peek.\"" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: "The Focus Vault — Hard lockdown for deep work" },
-      { name: "twitter:description", content: "Based on the product details provided in **image.png**, here is a short description for **The Focus Vault**:
-
-**The Focus Vault** is an absolute environmental i" },
-      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/511d36b4-1ca9-410c-a1ef-39fb4177d10c" },
-      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/511d36b4-1ca9-410c-a1ef-39fb4177d10c" },
+      { name: "twitter:description", content: "The Focus Vault is an absolute environmental isolation tool designed to eliminate digital distractions and defeat the \"myth of the quick peek.\"" },
+      { property: "og:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90718f07-a1ae-408c-93c7-2de03771d9b6" },
+      { name: "twitter:image", content: "https://storage.googleapis.com/gpt-engineer-file-uploads/attachments/og-images/90718f07-a1ae-408c-93c7-2de03771d9b6" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
