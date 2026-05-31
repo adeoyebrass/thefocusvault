@@ -130,15 +130,17 @@ export const respondToVote = createServerFn({ method: "POST" })
     const no = (resp ?? []).filter((r) => r.decision === "no").length;
     if (v && v.status === "pending") {
       if (yes >= (v.required_yes ?? 3)) {
-        await supabase
+        await supabaseAdmin
           .from("vouch_votes")
           .update({ status: "approved", resolved_at: new Date().toISOString() })
-          .eq("id", data.vote_id);
+          .eq("id", data.vote_id)
+          .eq("status", "pending");
       } else if (no >= (v.required_yes ?? 3)) {
-        await supabase
+        await supabaseAdmin
           .from("vouch_votes")
           .update({ status: "denied", resolved_at: new Date().toISOString() })
-          .eq("id", data.vote_id);
+          .eq("id", data.vote_id)
+          .eq("status", "pending");
       }
     }
     return { ok: true };

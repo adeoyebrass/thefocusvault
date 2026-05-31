@@ -14,6 +14,7 @@ export function SiteFooter() {
           <div className="label mb-3">Product</div>
           <ul className="space-y-2 text-sm">
             <li><Link to="/about" className="hover:underline">About the app</Link></li>
+            <li><Link to="/waitlist" className="hover:underline">Join the waitlist</Link></li>
             <li><Link to="/login" className="hover:underline">Sign in</Link></li>
           </ul>
         </div>

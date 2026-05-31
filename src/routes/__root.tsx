@@ -107,7 +107,7 @@ function AuthInvalidator() {
   return null;
 }
 
-const PUBLIC_PATHS = new Set(["/", "/login", "/signup", "/videos", "/blog", "/partner", "/contact", "/about"]);
+const PUBLIC_PATHS = new Set(["/", "/login", "/signup", "/videos", "/blog", "/partner", "/contact", "/about", "/waitlist"]);
 
 function AuthGate() {
   const { user, loading } = useAuth();

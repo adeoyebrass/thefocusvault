@@ -21,6 +21,7 @@ export function VaultNav() {
           <Link to="/videos" className="label hover:text-foreground">Videos</Link>
           <Link to="/blog" className="label hover:text-foreground">Blog</Link>
           <Link to="/partner" className="label hover:text-foreground">Partner</Link>
+          <Link to="/waitlist" className="label hover:text-foreground">Waitlist</Link>
           {user && <Link to="/huddle" className="label hover:text-foreground">App</Link>}
         </div>
         <div className="flex items-center gap-3">
