@@ -38,6 +38,30 @@ export type Database = {
         }
         Relationships: []
       }
+      lock_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          note: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          note?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -86,6 +110,33 @@ export type Database = {
           id?: string
           lead_id?: string
           member_id?: string
+        }
+        Relationships: []
+      }
+      team_reminders: {
+        Row: {
+          created_at: string
+          id: string
+          lead_id: string
+          member_id: string
+          message: string
+          read_at: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lead_id: string
+          member_id: string
+          message: string
+          read_at?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lead_id?: string
+          member_id?: string
+          message?: string
+          read_at?: string | null
         }
         Relationships: []
       }
@@ -172,6 +223,27 @@ export type Database = {
           required_yes?: number
           resolved_at?: string | null
           status?: string
+        }
+        Relationships: []
+      }
+      waitlist: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          location: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          location: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          location?: string
         }
         Relationships: []
       }
