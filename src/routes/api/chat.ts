@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
+import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const HUDDLE_SYSTEM = `You are THE FOCUS CONTRACTING AGENT for "The Focus Vault" — an extreme accountability app that hard-locks a user's phone from 9:00 AM to 5:00 PM.
 
@@ -67,24 +68,22 @@ export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        // Same-origin guard: only accept browser calls from this app's own origin.
-        const origin = request.headers.get("origin");
-        const url = new URL(request.url);
-        if (origin) {
-          try {
-            if (new URL(origin).host !== url.host) {
-              return new Response("Forbidden", { status: 403 });
-            }
-          } catch {
-            return new Response("Forbidden", { status: 403 });
-          }
+        // AUTH GATE: require a valid Supabase bearer token. No anonymous access.
+        const authHeader = request.headers.get("authorization") ?? "";
+        const token = authHeader.toLowerCase().startsWith("bearer ")
+          ? authHeader.slice(7).trim()
+          : "";
+        if (!token) {
+          return new Response("Unauthorized", { status: 401 });
         }
+        const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
+        if (userErr || !userData.user) {
+          return new Response("Unauthorized", { status: 401 });
+        }
+        const userId = userData.user.id;
 
-        const ip =
-          request.headers.get("cf-connecting-ip") ??
-          request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
-          "unknown";
-        if (!rateLimit(ip)) {
+        // Per-user rate limit (replaces previous IP-based limit).
+        if (!rateLimit(userId)) {
           return new Response("Too many requests", { status: 429 });
         }
 
