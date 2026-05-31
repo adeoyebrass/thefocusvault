@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
@@ -25,6 +26,11 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VouchVoteIdRouteImport } from './routes/vouch.$voteId'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 
+const WaitlistRoute = WaitlistRouteImport.update({
+  id: '/waitlist',
+  path: '/waitlist',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VideosRoute = VideosRouteImport.update({
   id: '/videos',
   path: '/videos',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/videos': typeof VideosRoute
+  '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/videos': typeof VideosRoute
+  '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
   '/videos': typeof VideosRoute
+  '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
   '/vouch/$voteId': typeof VouchVoteIdRoute
 }
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/team'
     | '/videos'
+    | '/waitlist'
     | '/api/chat'
     | '/vouch/$voteId'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/team'
     | '/videos'
+    | '/waitlist'
     | '/api/chat'
     | '/vouch/$voteId'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/team'
     | '/videos'
+    | '/waitlist'
     | '/api/chat'
     | '/vouch/$voteId'
   fileRoutesById: FileRoutesById
@@ -221,12 +233,20 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
   VideosRoute: typeof VideosRoute
+  WaitlistRoute: typeof WaitlistRoute
   ApiChatRoute: typeof ApiChatRoute
   VouchVoteIdRoute: typeof VouchVoteIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/waitlist': {
+      id: '/waitlist'
+      path: '/waitlist'
+      fullPath: '/waitlist'
+      preLoaderRoute: typeof WaitlistRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/videos': {
       id: '/videos'
       path: '/videos'
@@ -349,9 +369,20 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
   VideosRoute: VideosRoute,
+  WaitlistRoute: WaitlistRoute,
   ApiChatRoute: ApiChatRoute,
   VouchVoteIdRoute: VouchVoteIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
