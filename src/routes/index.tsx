@@ -7,10 +7,10 @@ export const Route = createFileRoute("/")({
   component: Landing,
   head: () => ({
     meta: [
-      { title: "The Focus Vault — The world is losing its attention. Take yours back." },
-      { name: "description", content: "The Focus Vault is a kiosk-grade phone lockdown for deep work. Learn about the global focus crisis, watch the films, read the research, and lock yourself in." },
+      { title: "The Focus Vault — Why the world can't focus anymore" },
+      { name: "description", content: "The global focus crisis, explained. Plus a kiosk-grade phone lockdown that businesses, teams and individuals use to take their attention back. $10/mo + $20 break-glass." },
       { property: "og:title", content: "The Focus Vault — Take your attention back" },
-      { property: "og:description", content: "Kiosk-grade phone lockdown. 9-5 hard lock. $20 break-glass + team vouchers." },
+      { property: "og:description", content: "Why the world can't focus, and the lockdown app fixing it. $10/mo per seat. $20 break-glass override." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
@@ -26,6 +26,67 @@ const REGIONS = [
   { place: "India", stat: "204 unlocks", note: "phone unlocks per worker per day" },
   { place: "Japan", stat: "1 in 3", note: "white-collar workers report 'brain fog' weekly" },
   { place: "Nigeria", stat: "6h 10m", note: "daily mobile screen time among 18–34" },
+];
+
+const STRUGGLES = [
+  { h: "The 47-second self", b: "Microsoft's Work Trend Index found the median worker switches contexts every 47 seconds. Deep work has been replaced by reactive work." },
+  { h: "Engineered to interrupt", b: "Every notification, badge, and infinite scroll was A/B-tested to defeat your willpower. You are not weak — you are outgunned." },
+  { h: "Attention residue", b: "Each glance at your phone costs ~23 minutes of cognitive recovery. Five glances = a lost morning." },
+  { h: "Remote work made it worse", b: "Without office friction, the only thing standing between you and TikTok is a decision you have to make 200 times a day." },
+  { h: "Children inherit the loop", b: "Teens average 8h 39m on screens daily. The pattern is becoming generational, not personal." },
+  { h: "Apps that promise to help, don't", b: "Soft blockers (Forest, Freedom, Screen Time) all ship a 'just kidding' button. Willpower at the moment of weakness is exactly what failed you the first time." },
+];
+
+const PLANS = [
+  {
+    name: "INDIVIDUAL",
+    price: "$10",
+    cadence: "/ month",
+    line: "One operator. Solo lockdown.",
+    bullets: [
+      "9-to-5 hard kiosk lock on your phone",
+      "AI Huddle that forges your daily contract",
+      "$20 break-glass override (paid to your team pool)",
+      "Personal focus log + weekly hours report",
+    ],
+    cta: { label: "Lock myself in", to: "/login" as const },
+    accent: false,
+  },
+  {
+    name: "TEAM · UP TO 5",
+    price: "$10",
+    cadence: "/ month · all-in",
+    line: "Founders, agencies, study groups.",
+    bullets: [
+      "5 seats included — lead + 4 members",
+      "Shared focus window the lead sets and freezes",
+      "Vouchers vote on every break-glass attempt",
+      "Lead dashboard: who's locked, who isn't, who's drifting",
+    ],
+    cta: { label: "Start a team", to: "/login" as const },
+    accent: true,
+  },
+  {
+    name: "COMPANY",
+    price: "+$2",
+    cadence: "/ extra seat / month",
+    line: "Anything above 5 heads. Volume safe.",
+    bullets: [
+      "Unlimited additional seats at $2/mo each",
+      "Company-wide lock visibility + reminders",
+      "Per-team focus windows and roster controls",
+      "Onboarding + admin support",
+    ],
+    cta: { label: "Talk to us", to: "/partner" as const },
+    accent: false,
+  },
+];
+
+const REVENUE_LINES = [
+  { k: "Subscriptions", v: "$10 base / month per individual or team of 5." },
+  { k: "Seat expansion", v: "$2 per additional team member, per month." },
+  { k: "Break-glass overrides", v: "$20 per emergency unlock — split between Focus Vault and the user's voucher pool." },
+  { k: "Partner deployments", v: "Custom annual contracts for companies, coaches and education programs." },
 ];
 
 function Landing() {
@@ -51,11 +112,11 @@ function Landing() {
               talk your way out of.
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
-              <Link to="/about" className="brutal-border bg-foreground px-6 py-4 mono text-xs font-bold uppercase tracking-widest text-background hover:opacity-90">
-                What is the Vault? →
+              <Link to="/waitlist" className="brutal-border bg-foreground px-6 py-4 mono text-xs font-bold uppercase tracking-widest text-background hover:opacity-90">
+                Join the waitlist →
               </Link>
               <Link to="/login" className="brutal-border bg-stakes-amber px-6 py-4 mono text-xs font-bold uppercase tracking-widest hover:opacity-90">
-                Lock yourself in → $10/mo
+                Lock yourself in · $10/mo
               </Link>
             </div>
           </div>
@@ -70,17 +131,34 @@ function Landing() {
         </div>
       </section>
 
-      {/* GLOBAL PROBLEM */}
+      {/* WHY PEOPLE CAN'T FOCUS */}
       <section className="relative z-10 border-y border-border bg-card/30">
         <div className="mx-auto max-w-7xl px-6 py-20">
-          <div className="label mb-4">§ 01 · THE GLOBAL FOCUS CRISIS</div>
+          <div className="label mb-4">§ 01 · WHY PEOPLE AROUND THE WORLD CAN'T FOCUS</div>
+          <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl max-w-3xl">
+            Six structural reasons your focus broke — and why it isn't your fault.
+          </h2>
+          <div className="mt-12 grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
+            {STRUGGLES.map((s) => (
+              <div key={s.h} className="bg-background p-6">
+                <h3 className="font-display text-xl font-bold">{s.h}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{s.b}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* GLOBAL DATA */}
+      <section className="relative z-10">
+        <div className="mx-auto max-w-7xl px-6 py-20">
+          <div className="label mb-4">§ 02 · EIGHT COUNTRIES · ONE PATTERN</div>
           <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">
-            Eight countries. One identical pattern.
+            Distraction is structural, not personal.
           </h2>
           <p className="mt-4 max-w-2xl text-muted-foreground">
-            Distraction is no longer personal — it is structural. Every operating
-            system, app and notification has been tuned for engagement, not output.
-            The numbers look the same in every timezone.
+            Every operating system, app and notification has been tuned for engagement,
+            not output. The numbers look the same in every timezone.
           </p>
           <div className="mt-12 grid gap-px bg-border md:grid-cols-2 lg:grid-cols-4">
             {REGIONS.map((r) => (
@@ -98,29 +176,95 @@ function Landing() {
       </section>
 
       {/* WHAT IT IS */}
-      <section className="relative z-10 mx-auto max-w-7xl px-6 py-24">
-        <div className="grid gap-12 md:grid-cols-12">
-          <div className="md:col-span-5">
-            <div className="label mb-4">§ 02 · THE APP IN ONE PARAGRAPH</div>
-            <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">
-              A safe for your phone. Operated by your team.
-            </h2>
+      <section className="relative z-10 border-y border-border bg-card/30">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="grid gap-12 md:grid-cols-12">
+            <div className="md:col-span-5">
+              <div className="label mb-4">§ 03 · THE APP IN ONE PARAGRAPH</div>
+              <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl">
+                A safe for your phone. Operated by your team.
+              </h2>
+            </div>
+            <div className="md:col-span-7 space-y-6 text-lg leading-relaxed text-muted-foreground">
+              <p>
+                The Focus Vault turns your phone into a single-purpose terminal between
+                9:00 and 17:00. The home screen displays one sentence — your daily
+                objective — and nothing else. Notifications are dropped before they
+                ever render.
+              </p>
+              <p>
+                When the urge to escape becomes unbearable, you pay a <span className="stakes-crimson font-semibold">$20</span> break-glass
+                fine and submit a reason. Ten teammates vote. Both conditions are
+                required. There is no admin override and no support hotline that can
+                let you out.
+              </p>
+              <Link to="/about" className="inline-block mono text-xs font-bold uppercase tracking-widest underline underline-offset-4">
+                Read the full system →
+              </Link>
+            </div>
           </div>
-          <div className="md:col-span-7 space-y-6 text-lg leading-relaxed text-muted-foreground">
-            <p>
-              The Focus Vault is a mobile app that turns your phone into a single-purpose
-              terminal between 9:00 and 17:00. The home screen displays one sentence —
-              your daily objective — and nothing else. The status bar disappears.
-              Notifications are dropped at the kernel before they ever render.
-            </p>
-            <p>
-              When the urge to escape becomes unbearable, you can pay a <span className="stakes-crimson font-semibold">$20</span> break-glass
-              fine and submit a reason. Ten teammates vote. Both conditions are required.
-              There is no admin override and no support hotline that can let you out.
-            </p>
-            <Link to="/about" className="inline-block mono text-xs font-bold uppercase tracking-widest underline underline-offset-4">
-              Read the full system →
-            </Link>
+        </div>
+      </section>
+
+      {/* HOW WE MAKE MONEY — PRICING */}
+      <section id="pricing" className="relative z-10">
+        <div className="mx-auto max-w-7xl px-6 py-24">
+          <div className="label mb-4">§ 04 · HOW THE FOCUS VAULT MAKES MONEY</div>
+          <h2 className="font-display text-4xl font-bold tracking-tight md:text-5xl max-w-3xl">
+            Transparent pricing. No ads. No data resale. No dark patterns.
+          </h2>
+          <p className="mt-4 max-w-2xl text-muted-foreground">
+            We charge for the lockdown itself and for the seats you add. The
+            break-glass fine is what funds your team's voucher pool — it's a
+            consequence, not a profit center.
+          </p>
+
+          <div className="mt-12 grid gap-6 md:grid-cols-3">
+            {PLANS.map((p) => (
+              <div
+                key={p.name}
+                className={`brutal-card flex flex-col p-8 ${p.accent ? "ring-amber" : ""}`}
+              >
+                <div className="label">{p.name}</div>
+                <div className="mt-4 flex items-baseline gap-1">
+                  <span className="font-display text-5xl font-bold">{p.price}</span>
+                  <span className="mono text-xs text-muted-foreground">{p.cadence}</span>
+                </div>
+                <p className="mt-3 text-sm text-muted-foreground">{p.line}</p>
+                <ul className="mt-6 space-y-2 text-sm">
+                  {p.bullets.map((b) => (
+                    <li key={b} className="flex gap-2">
+                      <span className="stakes-amber mono">→</span>
+                      <span>{b}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Link
+                  to={p.cta.to}
+                  className={`mt-8 inline-block w-full text-center brutal-border px-5 py-3 mono text-xs font-bold uppercase tracking-widest ${
+                    p.accent
+                      ? "bg-foreground text-background hover:opacity-90"
+                      : "hover:bg-secondary"
+                  }`}
+                >
+                  {p.cta.label} →
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          <div className="brutal-card mt-12 p-8">
+            <div className="label mb-4">REVENUE MODEL · IN PLAIN ENGLISH</div>
+            <ul className="grid gap-4 md:grid-cols-2">
+              {REVENUE_LINES.map((r) => (
+                <li key={r.k} className="flex gap-4">
+                  <span className="stakes-amber mono text-xs font-bold uppercase tracking-widest min-w-[140px]">
+                    {r.k}
+                  </span>
+                  <span className="text-sm text-muted-foreground">{r.v}</span>
+                </li>
+              ))}
+            </ul>
           </div>
         </div>
       </section>
@@ -128,12 +272,12 @@ function Landing() {
       {/* EXPLORE */}
       <section className="relative z-10 border-t border-border bg-card/30">
         <div className="mx-auto max-w-7xl px-6 py-20">
-          <div className="label mb-4">§ 03 · DIG IN</div>
+          <div className="label mb-4">§ 05 · DIG IN</div>
           <div className="mt-6 grid gap-6 md:grid-cols-3">
             {[
-              { to: "/videos", t: "Watch the films", d: "Short documentaries on the global attention crisis and what kiosk-grade focus looks like in practice." },
-              { to: "/blog", t: "Read the research", d: "Essays on attention residue, kernel-level distraction blocking, and team-enforced accountability." },
-              { to: "/partner", t: "Become a partner", d: "Companies, coaches and creators: deploy The Focus Vault to your community." },
+              { to: "/videos" as const, t: "Watch the films", d: "Short documentaries on the global attention crisis and what kiosk-grade focus looks like in practice." },
+              { to: "/blog" as const, t: "Read the research", d: "Essays on attention residue, kernel-level distraction blocking, and team-enforced accountability." },
+              { to: "/partner" as const, t: "Become a partner", d: "Companies, coaches and creators: deploy The Focus Vault to your community." },
             ].map((c) => (
               <Link key={c.to} to={c.to} className="brutal-card group p-8">
                 <h3 className="font-display text-2xl font-bold group-hover:stakes-amber">{c.t}</h3>
@@ -153,12 +297,20 @@ function Landing() {
           <h2 className="font-display text-4xl font-bold tracking-tight md:text-6xl">
             Willpower failed. Try architecture.
           </h2>
-          <Link
-            to="/login"
-            className="mt-10 inline-block brutal-border bg-foreground px-10 py-5 mono text-sm font-bold uppercase tracking-widest text-background hover:opacity-90"
-          >
-            Lock myself in → $10/mo
-          </Link>
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <Link
+              to="/login"
+              className="inline-block brutal-border bg-foreground px-10 py-5 mono text-sm font-bold uppercase tracking-widest text-background hover:opacity-90"
+            >
+              Lock myself in · $10/mo
+            </Link>
+            <Link
+              to="/waitlist"
+              className="inline-block brutal-border px-10 py-5 mono text-sm font-bold uppercase tracking-widest hover:bg-secondary"
+            >
+              Join the waitlist
+            </Link>
+          </div>
         </div>
       </section>
 

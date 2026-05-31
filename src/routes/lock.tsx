@@ -1,6 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useRef, useState } from "react";
 import { Countdown } from "@/components/Countdown";
+import { recordLockEvent } from "@/lib/company.functions";
 
 export const Route = createFileRoute("/lock")({
   component: LockScreen,
@@ -10,6 +12,20 @@ export const Route = createFileRoute("/lock")({
 function LockScreen() {
   const [scratch, setScratch] = useState("");
   const [holdPct, setHoldPct] = useState(0);
+  const record = useServerFn(recordLockEvent);
+  const recorded = useRef(false);
+
+  // Fire one "locked" telemetry event when the kiosk mounts so the user's
+  // lead/company can see they're in the vault.
+  useEffect(() => {
+    if (recorded.current) return;
+    recorded.current = true;
+    record({ data: { event_type: "locked" } }).catch(() => {});
+    return () => {
+      record({ data: { event_type: "unlocked" } }).catch(() => {});
+    };
+  }, [record]);
+
 
   // local-only scratchpad
   useEffect(() => {
