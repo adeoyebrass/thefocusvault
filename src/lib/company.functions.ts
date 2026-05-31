@@ -89,17 +89,3 @@ export const listMyReminders = createServerFn({ method: "GET" })
     return data ?? [];
   });
 
-// Public waitlist signup — uses the anon-key browser client path via supabase.
-import { supabase as publicClient } from "@/integrations/supabase/client";
-export async function joinWaitlist(input: { email: string; location: string }) {
-  const parsed = z.object({
-    email: z.string().email().max(320),
-    location: z.string().min(2).max(200),
-  }).parse(input);
-  const { error } = await publicClient.from("waitlist").insert({
-    email: parsed.email.toLowerCase(),
-    location: parsed.location,
-  });
-  if (error) throw new Error(error.message);
-  return { ok: true };
-}
