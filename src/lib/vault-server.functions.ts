@@ -1,13 +1,20 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
+
+async function requireVerifiedAccount(supabase: { auth: { getUser: () => Promise<{ data: { user: { email_confirmed_at?: string | null; confirmed_at?: string | null } | null }; error: unknown }> } }) {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user?.email_confirmed_at && !data.user?.confirmed_at) {
+    throw new Error("Email verification required.");
+  }
+}
 
 // ---------- Team ----------
 export const listMyTeam = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { data: roster } = await supabase
       .from("team_members")
       .select("id, member_id, created_at")
@@ -33,6 +40,8 @@ export const addTeamMember = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ email: z.string().email() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: profile } = await supabaseAdmin
       .from("profiles")
       .select("user_id")
@@ -52,6 +61,7 @@ export const removeTeamMember = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
+    await requireVerifiedAccount(supabase);
     const { error } = await supabase.from("team_members").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
@@ -65,6 +75,7 @@ export const createVote = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { data: row, error } = await supabase
       .from("vouch_votes")
       .insert({ owner_id: userId, reason: data.reason, required_yes: data.required_yes })
@@ -79,6 +90,7 @@ export const getVote = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { data: vote, error } = await supabase
       .from("vouch_votes")
       .select("id, owner_id, reason, status, required_yes, created_at, resolved_at")
@@ -111,6 +123,22 @@ export const respondToVote = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
+    const { data: vote } = await supabase
+      .from("vouch_votes")
+      .select("owner_id, status")
+      .eq("id", data.vote_id)
+      .single();
+    if (!vote || vote.owner_id === userId || vote.status !== "pending") {
+      throw new Error("You cannot vote on this request.");
+    }
+    const { data: membership } = await supabase
+      .from("team_members")
+      .select("id")
+      .eq("lead_id", vote.owner_id)
+      .eq("member_id", userId)
+      .maybeSingle();
+    if (!membership) throw new Error("You are not on this user's voucher roster.");
     const { error } = await supabase.from("vouch_responses").upsert(
       { vote_id: data.vote_id, voucher_id: userId, decision: data.decision, comment: data.comment ?? null },
       { onConflict: "vote_id,voucher_id" },
@@ -129,6 +157,7 @@ export const respondToVote = createServerFn({ method: "POST" })
     const yes = (resp ?? []).filter((r) => r.decision === "yes").length;
     const no = (resp ?? []).filter((r) => r.decision === "no").length;
     if (v && v.status === "pending") {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
       if (yes >= (v.required_yes ?? 3)) {
         await supabaseAdmin
           .from("vouch_votes")
@@ -150,6 +179,7 @@ export const listMyPendingVotes = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     // Votes from anyone whose roster I'm on, plus my own
     const { data: rosters } = await supabase
       .from("team_members")
@@ -171,8 +201,15 @@ export const getAdminAnalytics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
-    const { data: isAdmin } = await supabase.rpc("has_role", { _user_id: userId, _role: "admin" });
-    if (!isAdmin) throw new Error("Admin only.");
+    await requireVerifiedAccount(supabase);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: adminRole } = await supabaseAdmin
+      .from("user_roles")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("role", "admin")
+      .maybeSingle();
+    if (!adminRole) throw new Error("Admin only.");
     const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
 
@@ -185,24 +222,24 @@ export const getAdminAnalytics = createServerFn({ method: "GET" })
       { data: responses30 },
       { data: history },
     ] = await Promise.all([
-      supabase.from("profiles").select("*", { count: "exact", head: true }),
-      supabase.from("focus_sessions").select("*", { count: "exact", head: true }).gte("started_at", since),
-      supabase.from("vouch_votes").select("*", { count: "exact", head: true }).gte("created_at", since),
-      supabase
+      supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
+      supabaseAdmin.from("focus_sessions").select("*", { count: "exact", head: true }).gte("started_at", since),
+      supabaseAdmin.from("vouch_votes").select("*", { count: "exact", head: true }).gte("created_at", since),
+      supabaseAdmin
         .from("vouch_votes")
         .select("id, reason, owner_id, created_at, required_yes")
         .eq("status", "pending")
         .order("created_at", { ascending: false })
         .limit(20),
-      supabase
+      supabaseAdmin
         .from("vouch_votes")
         .select("id, status, created_at, resolved_at")
         .gte("created_at", since30),
-      supabase
+      supabaseAdmin
         .from("vouch_responses")
         .select("voucher_id, decision, created_at")
         .gte("created_at", since30),
-      supabase
+      supabaseAdmin
         .from("vouch_votes")
         .select("id, status, reason, owner_id, created_at, resolved_at")
         .neq("status", "pending")
@@ -246,7 +283,7 @@ export const getAdminAnalytics = createServerFn({ method: "GET" })
       ]),
     );
     if (ownerIds.length) {
-      const { data } = await supabase
+      const { data } = await supabaseAdmin
         .from("profiles")
         .select("user_id, display_name, email")
         .in("user_id", ownerIds);

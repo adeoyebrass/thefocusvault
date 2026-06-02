@@ -13,17 +13,18 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const nav = useNavigate();
-  const { user } = useAuth();
+  const { user, verified, signOut } = useAuth();
   const [mode, setMode] = useState<"signin" | "signup">("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [err, setErr] = useState<string | null>(null);
+  const [notice, setNotice] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (user) nav({ to: "/team" });
-  }, [user, nav]);
+    if (user && verified) nav({ to: "/team" });
+  }, [user, verified, nav]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -40,9 +41,14 @@ function LoginPage() {
           },
         });
         if (error) throw error;
+        setNotice("Check your email to verify the account before entering the Vault app.");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (!data.user?.email_confirmed_at && !data.user?.confirmed_at) {
+          await supabase.auth.signOut();
+          setErr("Verify your email before entering the Vault app.");
+        }
       }
     } catch (e: unknown) {
       setErr(e instanceof Error ? e.message : "Auth failed");
@@ -94,8 +100,18 @@ function LoginPage() {
             {mode === "signup" ? "Forge your contract." : "Step into the Vault."}
           </h1>
           <p className="mt-3 text-sm text-muted-foreground">
-            You need an account to be added to a team, to vouch for someone, or to break glass.
+            Only verified accounts can enter the mobile-style Vault app, join teams, vouch, or break glass.
           </p>
+
+          {user && !verified && (
+            <div className="mt-6 brutal-card p-4 ring-amber">
+              <div className="label stakes-amber mb-2">VERIFY EMAIL REQUIRED</div>
+              <p className="text-sm text-muted-foreground">
+                Confirm your email first. The app stays hidden until verification is complete.
+              </p>
+              <button onClick={signOut} className="mt-3 label hover:text-foreground">Use a different account →</button>
+            </div>
+          )}
 
           <button
             onClick={google}
@@ -137,6 +153,7 @@ function LoginPage() {
               placeholder="Password (min 8)"
               className="w-full brutal-border bg-background px-3 py-2 outline-none"
             />
+            {notice && <div className="stakes-amber mono text-xs">{notice}</div>}
             {err && <div className="stakes-crimson mono text-xs">{err}</div>}
             <button
               disabled={busy}

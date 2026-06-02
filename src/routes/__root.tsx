@@ -110,17 +110,18 @@ function AuthInvalidator() {
 const PUBLIC_PATHS = new Set(["/", "/login", "/signup", "/videos", "/blog", "/partner", "/contact", "/about", "/waitlist"]);
 
 function AuthGate() {
-  const { user, loading } = useAuth();
+  const { user, loading, verified } = useAuth();
   const router = useRouter();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isPublic = PUBLIC_PATHS.has(pathname);
+  const canEnterApp = Boolean(user && verified);
 
   useEffect(() => {
     if (loading) return;
-    if (!user && !isPublic) {
+    if (!canEnterApp && !isPublic) {
       router.navigate({ to: "/login", replace: true });
     }
-  }, [loading, user, isPublic, router]);
+  }, [loading, canEnterApp, isPublic, router]);
 
   if (loading) {
     return (
@@ -130,7 +131,7 @@ function AuthGate() {
     );
   }
 
-  if (!user && !isPublic) {
+  if (!canEnterApp && !isPublic) {
     return (
       <div className="grid min-h-screen place-items-center bg-background">
         <div className="label">§ REDIRECTING TO LOGIN</div>

@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { z } from "zod";
 import { createLovableAiGatewayProvider } from "@/lib/ai-gateway.server";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const HUDDLE_SYSTEM = `You are THE FOCUS CONTRACTING AGENT for "The Focus Vault" — an extreme accountability app that hard-locks a user's phone from 9:00 AM to 5:00 PM.
 
@@ -38,7 +37,7 @@ const PartSchema = z.object({
 
 const MessageSchema = z.object({
   id: z.string().max(120).optional(),
-  role: z.enum(["system", "user", "assistant"]),
+  role: z.enum(["user", "assistant"]),
   parts: z.array(PartSchema).max(20),
 }).passthrough();
 
@@ -76,9 +75,13 @@ export const Route = createFileRoute("/api/chat")({
         if (!token) {
           return new Response("Unauthorized", { status: 401 });
         }
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
         const { data: userData, error: userErr } = await supabaseAdmin.auth.getUser(token);
         if (userErr || !userData.user) {
           return new Response("Unauthorized", { status: 401 });
+        }
+        if (!userData.user.email_confirmed_at && !userData.user.confirmed_at) {
+          return new Response("Email verification required", { status: 403 });
         }
         const userId = userData.user.id;
 

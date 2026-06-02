@@ -2,6 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
+async function requireVerifiedAccount(supabase: { auth: { getUser: () => Promise<{ data: { user: { email_confirmed_at?: string | null; confirmed_at?: string | null } | null }; error: unknown }> } }) {
+  const { data, error } = await supabase.auth.getUser();
+  if (error || !data.user?.email_confirmed_at && !data.user?.confirmed_at) {
+    throw new Error("Email verification required.");
+  }
+}
+
 // Record a lock/unlock event for the current user.
 export const recordLockEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -13,6 +20,7 @@ export const recordLockEvent = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { error } = await supabase
       .from("lock_events")
       .insert({ user_id: userId, event_type: data.event_type, note: data.note ?? null });
@@ -25,6 +33,7 @@ export const getTeamLockStatus = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { data: roster } = await supabase
       .from("team_members")
       .select("member_id")
@@ -68,6 +77,14 @@ export const sendLockReminder = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
+    const { data: membership } = await supabase
+      .from("team_members")
+      .select("id")
+      .eq("lead_id", userId)
+      .eq("member_id", data.member_id)
+      .maybeSingle();
+    if (!membership) throw new Error("You can only remind members on your roster.");
     const { error } = await supabase
       .from("team_reminders")
       .insert({ lead_id: userId, member_id: data.member_id, message: data.message });
@@ -80,6 +97,7 @@ export const listMyReminders = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { supabase, userId } = context;
+    await requireVerifiedAccount(supabase);
     const { data } = await supabase
       .from("team_reminders")
       .select("id, lead_id, message, read_at, created_at")
