@@ -5,6 +5,7 @@ import ReactMarkdown from "react-markdown";
 import { useAuth } from "@/lib/auth-context";
 import { VaultNav } from "@/components/VaultNav";
 import { createVote } from "@/lib/vault-server.functions";
+import { supabase } from "@/integrations/supabase/client";
 import breakGlassImage from "@/assets/break-glass.jpg";
 
 export const Route = createFileRoute("/break-glass")({
@@ -45,9 +46,12 @@ function BreakGlassPage() {
     }
     // 2. stream AI prescreener
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+      if (!token) throw new Error("Missing verified session");
       const res = await fetch("/api/chat", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           mode: "prescreen",
           messages: [{ id: "u1", role: "user", parts: [{ type: "text", text: reason }] }],

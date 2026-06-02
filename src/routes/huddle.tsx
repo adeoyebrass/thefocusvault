@@ -5,6 +5,12 @@ import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { VaultNav } from "@/components/VaultNav";
 import { useVaultConfig, focusHours } from "@/lib/vault-config";
+import { supabase } from "@/integrations/supabase/client";
+
+async function authHeaders(): Promise<Record<string, string>> {
+  const { data } = await supabase.auth.getSession();
+  return data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {};
+}
 
 export const Route = createFileRoute("/huddle")({
   component: HuddlePage,
@@ -17,7 +23,11 @@ export const Route = createFileRoute("/huddle")({
 });
 
 function HuddlePage() {
-  const transport = new DefaultChatTransport({ api: "/api/chat", body: { mode: "huddle" } });
+  const transport = new DefaultChatTransport({
+    api: "/api/chat",
+    body: { mode: "huddle" },
+    headers: authHeaders,
+  });
   const { messages, sendMessage, status } = useChat({ id: "huddle", transport });
   const [input, setInput] = useState("");
   const scrollRef = useRef<HTMLDivElement>(null);
