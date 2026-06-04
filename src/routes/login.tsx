@@ -23,7 +23,7 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (user && verified) nav({ to: "/team" });
+    if (user && verified) nav({ to: "/verify-face" });
   }, [user, verified, nav]);
 
   async function submit(e: React.FormEvent) {

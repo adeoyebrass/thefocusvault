@@ -87,48 +87,48 @@
   --sidebar-ring: oklch(0.78 0.16 75);
 }
 
-/* LIGHT MODE — paper-white brutalism. Same structural language, inverted canvas.
- * Applied by toggling `.light` on <html>. Accents stay; surfaces flip. */
+/* LIGHT MODE — Cool Stone. Soft stone-gray canvas, navy ink, steel-blue accent.
+ * Professional enterprise palette. Applied by toggling `.light` on <html>. */
 .light {
-  /* army green canvas — olive drab, brutalist field-manual feel */
-  --background: oklch(0.5 0.055 125);
-  --foreground: oklch(0.97 0.02 95);
-  --card: oklch(0.44 0.05 125);
-  --card-foreground: oklch(0.97 0.02 95);
-  --popover: oklch(0.44 0.05 125);
-  --popover-foreground: oklch(0.97 0.02 95);
-  --primary: oklch(0.97 0.02 95);
-  --primary-foreground: oklch(0.32 0.05 125);
-  --secondary: oklch(0.42 0.05 125);
-  --secondary-foreground: oklch(0.97 0.02 95);
-  --muted: oklch(0.45 0.045 125);
-  --muted-foreground: oklch(0.85 0.03 95);
-  --accent: oklch(0.4 0.05 125);
-  --accent-foreground: oklch(0.97 0.02 95);
-  --destructive: oklch(0.6 0.24 25);
+  --background: oklch(0.97 0.004 250);
+  --foreground: oklch(0.28 0.025 260);
+  --card: oklch(0.99 0.003 250);
+  --card-foreground: oklch(0.28 0.025 260);
+  --popover: oklch(0.99 0.003 250);
+  --popover-foreground: oklch(0.28 0.025 260);
+  --primary: oklch(0.28 0.025 260);
+  --primary-foreground: oklch(0.98 0.003 250);
+  --secondary: oklch(0.93 0.006 250);
+  --secondary-foreground: oklch(0.28 0.025 260);
+  --muted: oklch(0.94 0.005 250);
+  --muted-foreground: oklch(0.48 0.02 260);
+  --accent: oklch(0.92 0.012 250);
+  --accent-foreground: oklch(0.28 0.025 260);
+  --destructive: oklch(0.55 0.18 25);
   --destructive-foreground: oklch(0.98 0 0);
-  --border: oklch(0.36 0.04 125);
-  --input: oklch(0.42 0.05 125);
-  --ring: oklch(0.74 0.09 82);
+  --border: oklch(0.88 0.008 250);
+  --input: oklch(0.93 0.006 250);
+  --ring: oklch(0.52 0.11 250);
 
-  --amber: oklch(0.74 0.09 82);
-  --crimson: oklch(0.55 0.18 25);
-  --steel: oklch(0.6 0.03 125);
+  /* Steel-blue primary accent, deep crimson reserved for danger */
+  --amber: oklch(0.52 0.11 250);
+  --crimson: oklch(0.52 0.17 25);
+  --steel: oklch(0.55 0.02 260);
 
-  --chart-1: oklch(0.74 0.09 82);
-  --chart-2: oklch(0.55 0.18 25);
-  --chart-3: oklch(0.75 0.05 125);
-  --chart-4: oklch(0.55 0.05 125);
-  --chart-5: oklch(0.97 0.02 95);
+  --chart-1: oklch(0.52 0.11 250);
+  --chart-2: oklch(0.52 0.17 25);
+  --chart-3: oklch(0.72 0.05 250);
+  --chart-4: oklch(0.45 0.04 260);
+  --chart-5: oklch(0.85 0.01 250);
 
-  --sidebar: oklch(0.5 0.055 125);
-  --sidebar-foreground: oklch(0.97 0.02 95);
-  --sidebar-primary: oklch(0.97 0.02 95);
-  --sidebar-primary-foreground: oklch(0.32 0.05 125);
-  --sidebar-accent: oklch(0.42 0.05 125);
-  --sidebar-accent-foreground: oklch(0.97 0.02 95);
-  --sidebar-border: oklch(0.36 0.04 125);
-  --sidebar-ring: oklch(0.82 0.17 78);
+  --sidebar: oklch(0.97 0.004 250);
+  --sidebar-foreground: oklch(0.28 0.025 260);
+  --sidebar-primary: oklch(0.28 0.025 260);
+  --sidebar-primary-foreground: oklch(0.98 0.003 250);
+  --sidebar-accent: oklch(0.93 0.006 250);
+  --sidebar-accent-foreground: oklch(0.28 0.025 260);
+  --sidebar-border: oklch(0.88 0.008 250);
+  --sidebar-ring: oklch(0.52 0.11 250);
 }
 
 @layer base {
