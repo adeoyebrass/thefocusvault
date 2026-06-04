@@ -23,6 +23,8 @@ export function VaultNav() {
           <Link to="/partner" className="label hover:text-foreground">Partner</Link>
           <Link to="/waitlist" className="label hover:text-foreground">Waitlist</Link>
           {user && <Link to="/huddle" className="label hover:text-foreground">App</Link>}
+          {user && <Link to="/friends" className="label hover:text-foreground">Friends</Link>}
+          {user && <Link to="/settings" className="label hover:text-foreground">Settings</Link>}
         </div>
         <div className="flex items-center gap-3">
           <ThemeToggle />

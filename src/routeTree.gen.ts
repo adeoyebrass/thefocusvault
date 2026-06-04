@@ -11,12 +11,15 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as VideosRouteImport } from './routes/videos'
+import { Route as VerifyFaceRouteImport } from './routes/verify-face'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LockRouteImport } from './routes/lock'
 import { Route as HuddleRouteImport } from './routes/huddle'
+import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BreakGlassRouteImport } from './routes/break-glass'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -36,6 +39,11 @@ const VideosRoute = VideosRouteImport.update({
   path: '/videos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyFaceRoute = VerifyFaceRouteImport.update({
+  id: '/verify-face',
+  path: '/verify-face',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -44,6 +52,11 @@ const TeamRoute = TeamRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnerRoute = PartnerRouteImport.update({
@@ -64,6 +77,11 @@ const LockRoute = LockRouteImport.update({
 const HuddleRoute = HuddleRouteImport.update({
   id: '/huddle',
   path: '/huddle',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FriendsRoute = FriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -114,12 +132,15 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRoute
   '/break-glass': typeof BreakGlassRoute
   '/contact': typeof ContactRoute
+  '/friends': typeof FriendsRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -132,12 +153,15 @@ export interface FileRoutesByTo {
   '/blog': typeof BlogRoute
   '/break-glass': typeof BreakGlassRoute
   '/contact': typeof ContactRoute
+  '/friends': typeof FriendsRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -151,12 +175,15 @@ export interface FileRoutesById {
   '/blog': typeof BlogRoute
   '/break-glass': typeof BreakGlassRoute
   '/contact': typeof ContactRoute
+  '/friends': typeof FriendsRoute
   '/huddle': typeof HuddleRoute
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
   '/api/chat': typeof ApiChatRoute
@@ -171,12 +198,15 @@ export interface FileRouteTypes {
     | '/blog'
     | '/break-glass'
     | '/contact'
+    | '/friends'
     | '/huddle'
     | '/lock'
     | '/login'
     | '/partner'
+    | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/verify-face'
     | '/videos'
     | '/waitlist'
     | '/api/chat'
@@ -189,12 +219,15 @@ export interface FileRouteTypes {
     | '/blog'
     | '/break-glass'
     | '/contact'
+    | '/friends'
     | '/huddle'
     | '/lock'
     | '/login'
     | '/partner'
+    | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/verify-face'
     | '/videos'
     | '/waitlist'
     | '/api/chat'
@@ -207,12 +240,15 @@ export interface FileRouteTypes {
     | '/blog'
     | '/break-glass'
     | '/contact'
+    | '/friends'
     | '/huddle'
     | '/lock'
     | '/login'
     | '/partner'
+    | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/verify-face'
     | '/videos'
     | '/waitlist'
     | '/api/chat'
@@ -226,12 +262,15 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRoute
   BreakGlassRoute: typeof BreakGlassRoute
   ContactRoute: typeof ContactRoute
+  FriendsRoute: typeof FriendsRoute
   HuddleRoute: typeof HuddleRoute
   LockRoute: typeof LockRoute
   LoginRoute: typeof LoginRoute
   PartnerRoute: typeof PartnerRoute
+  SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
+  VerifyFaceRoute: typeof VerifyFaceRoute
   VideosRoute: typeof VideosRoute
   WaitlistRoute: typeof WaitlistRoute
   ApiChatRoute: typeof ApiChatRoute
@@ -254,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VideosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify-face': {
+      id: '/verify-face'
+      path: '/verify-face'
+      fullPath: '/verify-face'
+      preLoaderRoute: typeof VerifyFaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -266,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partner': {
@@ -294,6 +347,13 @@ declare module '@tanstack/react-router' {
       path: '/huddle'
       fullPath: '/huddle'
       preLoaderRoute: typeof HuddleRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/friends': {
+      id: '/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof FriendsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -362,12 +422,15 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRoute,
   BreakGlassRoute: BreakGlassRoute,
   ContactRoute: ContactRoute,
+  FriendsRoute: FriendsRoute,
   HuddleRoute: HuddleRoute,
   LockRoute: LockRoute,
   LoginRoute: LoginRoute,
   PartnerRoute: PartnerRoute,
+  SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
+  VerifyFaceRoute: VerifyFaceRoute,
   VideosRoute: VideosRoute,
   WaitlistRoute: WaitlistRoute,
   ApiChatRoute: ApiChatRoute,
@@ -376,3 +439,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
