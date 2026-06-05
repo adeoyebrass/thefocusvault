@@ -23,7 +23,15 @@ function LoginPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (user && verified) nav({ to: "/verify-face" });
+    if (!user || !verified) return;
+    (async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("face_verified_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      nav({ to: data?.face_verified_at ? "/huddle" : "/verify-face", replace: true });
+    })();
   }, [user, verified, nav]);
 
   async function submit(e: React.FormEvent) {
