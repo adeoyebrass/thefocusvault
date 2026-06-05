@@ -38,6 +38,63 @@ export type Database = {
         }
         Relationships: []
       }
+      friend_pings: {
+        Row: {
+          created_at: string
+          id: string
+          kind: Database["public"]["Enums"]["friend_ping_kind"]
+          message: string | null
+          read_at: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: Database["public"]["Enums"]["friend_ping_kind"]
+          message?: string | null
+          read_at?: string | null
+          recipient_id: string
+          sender_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: Database["public"]["Enums"]["friend_ping_kind"]
+          message?: string | null
+          read_at?: string | null
+          recipient_id?: string
+          sender_id?: string
+        }
+        Relationships: []
+      }
+      friendships: {
+        Row: {
+          created_at: string
+          id: string
+          recipient_id: string
+          requester_id: string
+          status: Database["public"]["Enums"]["friendship_status"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          recipient_id: string
+          requester_id: string
+          status?: Database["public"]["Enums"]["friendship_status"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          recipient_id?: string
+          requester_id?: string
+          status?: Database["public"]["Enums"]["friendship_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lock_events: {
         Row: {
           created_at: string
@@ -68,6 +125,8 @@ export type Database = {
           created_at: string
           display_name: string | null
           email: string | null
+          face_image_path: string | null
+          face_verified_at: string | null
           id: string
           updated_at: string
           user_id: string
@@ -77,6 +136,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          face_image_path?: string | null
+          face_verified_at?: string | null
           id?: string
           updated_at?: string
           user_id: string
@@ -86,6 +147,8 @@ export type Database = {
           created_at?: string
           display_name?: string | null
           email?: string | null
+          face_image_path?: string | null
+          face_verified_at?: string | null
           id?: string
           updated_at?: string
           user_id?: string
@@ -252,6 +315,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      are_friends: { Args: { _a: string; _b: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -262,6 +326,8 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      friend_ping_kind: "lock" | "break_request"
+      friendship_status: "pending" | "accepted" | "declined"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -390,6 +456,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      friend_ping_kind: ["lock", "break_request"],
+      friendship_status: ["pending", "accepted", "declined"],
     },
   },
 } as const
