@@ -21,6 +21,7 @@ function LockScreen() {
   useEffect(() => {
     if (recorded.current) return;
     recorded.current = true;
+    playLockSound();
     record({ data: { event_type: "locked" } }).catch(() => {});
     return () => {
       record({ data: { event_type: "unlocked" } }).catch(() => {});
