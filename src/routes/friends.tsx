@@ -13,6 +13,7 @@ import {
   listMyPings,
   markPingRead,
 } from "@/lib/friends.functions";
+import { playPingSound } from "@/lib/sound";
 
 export const Route = createFileRoute("/friends")({
   component: FriendsPage,
