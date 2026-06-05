@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Countdown } from "@/components/Countdown";
 import { recordLockEvent } from "@/lib/company.functions";
+import { playLockSound } from "@/lib/sound";
 
 export const Route = createFileRoute("/lock")({
   component: LockScreen,
