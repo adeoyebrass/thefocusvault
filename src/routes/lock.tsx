@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import { Countdown } from "@/components/Countdown";
 import { recordLockEvent } from "@/lib/company.functions";
+import { playLockSound } from "@/lib/sound";
 
 export const Route = createFileRoute("/lock")({
   component: LockScreen,
@@ -20,6 +21,7 @@ function LockScreen() {
   useEffect(() => {
     if (recorded.current) return;
     recorded.current = true;
+    playLockSound();
     record({ data: { event_type: "locked" } }).catch(() => {});
     return () => {
       record({ data: { event_type: "unlocked" } }).catch(() => {});

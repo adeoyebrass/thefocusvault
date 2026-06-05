@@ -13,6 +13,7 @@ import {
   listMyPings,
   markPingRead,
 } from "@/lib/friends.functions";
+import { playPingSound } from "@/lib/sound";
 
 export const Route = createFileRoute("/friends")({
   component: FriendsPage,
@@ -74,6 +75,7 @@ function FriendsPage() {
       ? "Time to lock your phone — let's focus."
       : "I'm requesting a break-glass — can you vouch?";
     await ping({ data: { recipient_id, kind, message: msg } });
+    playPingSound();
   }
 
   async function onMarkRead(id: string) {
