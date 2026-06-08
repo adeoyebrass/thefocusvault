@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Menu, X } from "lucide-react";
 import { useAuth } from "@/lib/auth-context";
 import { ThemeToggle } from "@/components/ThemeToggle";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
+const logo = logoAsset.url;
 
 export function VaultNav() {
   const { user, signOut } = useAuth();
