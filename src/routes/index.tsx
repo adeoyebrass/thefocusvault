@@ -1,7 +1,8 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { VaultNav } from "@/components/VaultNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
+const logo = logoAsset.url;
 
 export const Route = createFileRoute("/")({
   component: Landing,

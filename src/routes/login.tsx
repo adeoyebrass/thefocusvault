@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable";
 import { useAuth } from "@/lib/auth-context";
 import { VaultNav } from "@/components/VaultNav";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/logo.png.asset.json";
+const logo = logoAsset.url;
 
 export const Route = createFileRoute("/login")({
   component: LoginPage,
