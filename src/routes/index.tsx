@@ -303,7 +303,7 @@ function Landing() {
               to="/login"
               className="inline-block brutal-border bg-foreground px-10 py-5 mono text-sm font-bold uppercase tracking-widest text-background hover:opacity-90"
             >
-              Lock myself in · $10/mo
+              Lock myself in · $50/yr
             </Link>
             <Link
               to="/waitlist"
