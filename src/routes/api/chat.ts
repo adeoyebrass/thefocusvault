@@ -13,13 +13,13 @@ Minimalist, high-contrast, direct, firm but warm. Clean markdown — bold header
 ### Single — $50 / year
 - 1 person.
 - No add-on seats.
-- Personal financial stakes ($5–$50 per session). Break the vault → forfeit (Focus Vault keeps 15%, rest to charity partners).
+- Personal financial stakes per session, **capped at 70% of the annual plan = up to $35/session**. Break the vault → forfeit (Focus Vault keeps 15%, rest to charity partners).
 - Best for: solo operators, freelancers, students, indie builders.
 
 ### Family — $220 / year
 - Up to **6 seats** included.
 - Extra seats: **$35 / year each**, hard cap at **9 total seats**.
-- Personal financial stakes per member.
+- Personal financial stakes per member, **capped at 70% of the annual plan = up to $154/session**. Same 15% / 85% split on forfeit.
 - Best for: households, parents enforcing screen discipline, partners co-locking.
 
 ### Company — $350 / year
