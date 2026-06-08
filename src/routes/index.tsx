@@ -40,43 +40,43 @@ const STRUGGLES = [
 
 const PLANS = [
   {
-    name: "INDIVIDUAL",
-    price: "$10",
-    cadence: "/ month",
+    name: "SINGLE",
+    price: "$50",
+    cadence: "/ year",
     line: "One operator. Solo lockdown.",
     bullets: [
-      "9-to-5 hard kiosk lock on your phone",
-      "AI Huddle that forges your daily contract",
-      "$20 break-glass override (paid to your team pool)",
-      "Personal focus log + weekly hours report",
+      "1 seat. 9-to-5 hard kiosk lock.",
+      "AI Huddle + daily focus contract.",
+      "Personal stakes up to $35/session (70% of plan).",
+      "Break the vault → 15% to Focus Vault, 85% to charity.",
     ],
     cta: { label: "Lock myself in", to: "/login" as const },
     accent: false,
   },
   {
-    name: "TEAM · UP TO 5",
-    price: "$10",
-    cadence: "/ month · all-in",
-    line: "Founders, agencies, study groups.",
+    name: "FAMILY",
+    price: "$220",
+    cadence: "/ year · up to 6 seats",
+    line: "Households, partners, parents.",
     bullets: [
-      "5 seats included — lead + 4 members",
-      "Shared focus window the lead sets and freezes",
-      "Vouchers vote on every break-glass attempt",
-      "Lead dashboard: who's locked, who isn't, who's drifting",
+      "6 seats included. Extra seats $35/yr (cap 9).",
+      "Per-member stakes up to $154/session (70% of plan).",
+      "Shared focus windows, lead controls.",
+      "Vouchers vote on every break-glass attempt.",
     ],
-    cta: { label: "Start a team", to: "/login" as const },
+    cta: { label: "Start a family vault", to: "/login" as const },
     accent: true,
   },
   {
     name: "COMPANY",
-    price: "+$2",
-    cadence: "/ extra seat / month",
-    line: "Anything above 5 heads. Volume safe.",
+    price: "$350",
+    cadence: "/ year · up to 10 seats",
+    line: "Startups, agencies, focus-first teams.",
     bullets: [
-      "Unlimited additional seats at $2/mo each",
-      "Company-wide lock visibility + reminders",
-      "Per-team focus windows and roster controls",
-      "Onboarding + admin support",
+      "10 seats included. Extra seats $25/yr, no cap.",
+      "No financial stake — breaks alert the team admin.",
+      "Per-team focus windows + roster controls.",
+      "Admin dashboard, onboarding, partner support.",
     ],
     cta: { label: "Talk to us", to: "/partner" as const },
     accent: false,
@@ -84,10 +84,10 @@ const PLANS = [
 ];
 
 const REVENUE_LINES = [
-  { k: "Subscriptions", v: "$10 base / month per individual or team of 5." },
-  { k: "Seat expansion", v: "$2 per additional team member, per month." },
-  { k: "Break-glass overrides", v: "$20 per emergency unlock — split between Focus Vault and the user's voucher pool." },
-  { k: "Partner deployments", v: "Custom annual contracts for companies, coaches and education programs." },
+  { k: "Single", v: "$50 / year per operator. One seat, personal stakes." },
+  { k: "Family", v: "$220 / year, 6 seats included. +$35 / year per extra seat (cap 9)." },
+  { k: "Company", v: "$350 / year, 10 seats included. +$25 / year per extra seat, no cap." },
+  { k: "Stakes (Single & Family)", v: "Per-session financial stake, up to 70% of the annual plan. Forfeited stakes: 15% to Focus Vault, 85% to charity partners." },
 ];
 
 function Landing() {
