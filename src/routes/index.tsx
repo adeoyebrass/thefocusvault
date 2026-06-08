@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
       { title: "The Focus Vault — Why the world can't focus anymore" },
       { name: "description", content: "The global focus crisis, explained. Plus a kiosk-grade phone lockdown that businesses, teams and individuals use to take their attention back. $10/mo + $20 break-glass." },
       { property: "og:title", content: "The Focus Vault — Take your attention back" },
-      { property: "og:description", content: "Why the world can't focus, and the lockdown app fixing it. $10/mo per seat. $20 break-glass override." },
+      { property: "og:description", content: "Why the world can't focus, and the lockdown app fixing it. From $50/year. Stake up to 70% of your plan per session." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
