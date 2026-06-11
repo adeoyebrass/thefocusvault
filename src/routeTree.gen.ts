@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WaitlistRouteImport } from './routes/waitlist'
 import { Route as VideosRouteImport } from './routes/videos'
 import { Route as VerifyFaceRouteImport } from './routes/verify-face'
+import { Route as TelemetryRouteImport } from './routes/telemetry'
 import { Route as TeamRouteImport } from './routes/team'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as RoomsRouteImport } from './routes/rooms'
 import { Route as PartnerRouteImport } from './routes/partner'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as LockRouteImport } from './routes/lock'
@@ -44,6 +46,11 @@ const VerifyFaceRoute = VerifyFaceRouteImport.update({
   path: '/verify-face',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TelemetryRoute = TelemetryRouteImport.update({
+  id: '/telemetry',
+  path: '/telemetry',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TeamRoute = TeamRouteImport.update({
   id: '/team',
   path: '/team',
@@ -57,6 +64,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RoomsRoute = RoomsRouteImport.update({
+  id: '/rooms',
+  path: '/rooms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PartnerRoute = PartnerRouteImport.update({
@@ -137,9 +149,11 @@ export interface FileRoutesByFullPath {
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/rooms': typeof RoomsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/telemetry': typeof TelemetryRoute
   '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
@@ -158,9 +172,11 @@ export interface FileRoutesByTo {
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/rooms': typeof RoomsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/telemetry': typeof TelemetryRoute
   '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
@@ -180,9 +196,11 @@ export interface FileRoutesById {
   '/lock': typeof LockRoute
   '/login': typeof LoginRoute
   '/partner': typeof PartnerRoute
+  '/rooms': typeof RoomsRoute
   '/settings': typeof SettingsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/team': typeof TeamRoute
+  '/telemetry': typeof TelemetryRoute
   '/verify-face': typeof VerifyFaceRoute
   '/videos': typeof VideosRoute
   '/waitlist': typeof WaitlistRoute
@@ -203,9 +221,11 @@ export interface FileRouteTypes {
     | '/lock'
     | '/login'
     | '/partner'
+    | '/rooms'
     | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/telemetry'
     | '/verify-face'
     | '/videos'
     | '/waitlist'
@@ -224,9 +244,11 @@ export interface FileRouteTypes {
     | '/lock'
     | '/login'
     | '/partner'
+    | '/rooms'
     | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/telemetry'
     | '/verify-face'
     | '/videos'
     | '/waitlist'
@@ -245,9 +267,11 @@ export interface FileRouteTypes {
     | '/lock'
     | '/login'
     | '/partner'
+    | '/rooms'
     | '/settings'
     | '/sitemap.xml'
     | '/team'
+    | '/telemetry'
     | '/verify-face'
     | '/videos'
     | '/waitlist'
@@ -267,9 +291,11 @@ export interface RootRouteChildren {
   LockRoute: typeof LockRoute
   LoginRoute: typeof LoginRoute
   PartnerRoute: typeof PartnerRoute
+  RoomsRoute: typeof RoomsRoute
   SettingsRoute: typeof SettingsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamRoute: typeof TeamRoute
+  TelemetryRoute: typeof TelemetryRoute
   VerifyFaceRoute: typeof VerifyFaceRoute
   VideosRoute: typeof VideosRoute
   WaitlistRoute: typeof WaitlistRoute
@@ -300,6 +326,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyFaceRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/telemetry': {
+      id: '/telemetry'
+      path: '/telemetry'
+      fullPath: '/telemetry'
+      preLoaderRoute: typeof TelemetryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/team': {
       id: '/team'
       path: '/team'
@@ -319,6 +352,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rooms': {
+      id: '/rooms'
+      path: '/rooms'
+      fullPath: '/rooms'
+      preLoaderRoute: typeof RoomsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/partner': {
@@ -427,9 +467,11 @@ const rootRouteChildren: RootRouteChildren = {
   LockRoute: LockRoute,
   LoginRoute: LoginRoute,
   PartnerRoute: PartnerRoute,
+  RoomsRoute: RoomsRoute,
   SettingsRoute: SettingsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamRoute: TeamRoute,
+  TelemetryRoute: TelemetryRoute,
   VerifyFaceRoute: VerifyFaceRoute,
   VideosRoute: VideosRoute,
   WaitlistRoute: WaitlistRoute,
