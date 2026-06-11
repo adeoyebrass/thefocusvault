@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      focus_room_participants: {
+        Row: {
+          added_at: string
+          room_id: string
+          user_id: string
+        }
+        Insert: {
+          added_at?: string
+          room_id: string
+          user_id: string
+        }
+        Update: {
+          added_at?: string
+          room_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "focus_room_participants_room_id_fkey"
+            columns: ["room_id"]
+            isOneToOne: false
+            referencedRelation: "focus_rooms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      focus_rooms: {
+        Row: {
+          created_at: string
+          ends_at: string
+          id: string
+          is_active: boolean
+          owner_id: string
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["room_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          id?: string
+          is_active?: boolean
+          owner_id: string
+          starts_at: string
+          title: string
+          type: Database["public"]["Enums"]["room_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          id?: string
+          is_active?: boolean
+          owner_id?: string
+          starts_at?: string
+          title?: string
+          type?: Database["public"]["Enums"]["room_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       focus_sessions: {
         Row: {
           ended_at: string | null
@@ -115,6 +177,36 @@ export type Database = {
           event_type?: string
           id?: string
           note?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      penalty_records: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          id: string
+          justification: string | null
+          status: string
+          stripe_charge_id: string | null
+          user_id: string
+        }
+        Insert: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          justification?: string | null
+          status?: string
+          stripe_charge_id?: string | null
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          justification?: string | null
+          status?: string
+          stripe_charge_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -323,11 +415,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_room_owner: {
+        Args: { _room: string; _user: string }
+        Returns: boolean
+      }
     }
     Enums: {
       app_role: "admin" | "user"
       friend_ping_kind: "lock" | "break_request"
       friendship_status: "pending" | "accepted" | "declined"
+      room_type: "extension" | "ephemeral"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -458,6 +555,7 @@ export const Constants = {
       app_role: ["admin", "user"],
       friend_ping_kind: ["lock", "break_request"],
       friendship_status: ["pending", "accepted", "declined"],
+      room_type: ["extension", "ephemeral"],
     },
   },
 } as const
