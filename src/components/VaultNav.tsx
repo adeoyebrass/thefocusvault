@@ -19,8 +19,11 @@ export function VaultNav() {
     { to: "/waitlist", label: "Waitlist", auth: false },
     { to: "/huddle", label: "App", auth: true },
     { to: "/friends", label: "Friends", auth: true },
+    { to: "/rooms", label: "Rooms", auth: true },
+    { to: "/telemetry", label: "Telemetry", auth: true },
     { to: "/settings", label: "Settings", auth: true },
   ] as const;
+
 
   const visible = links.filter((l) => !l.auth || !!user);
 

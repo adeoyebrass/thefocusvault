@@ -9,10 +9,11 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "The Focus Vault — Why the world can't focus anymore" },
-      { name: "description", content: "The global focus crisis, explained. Plus a kiosk-grade phone lockdown that businesses, teams and individuals use to take their attention back. $10/mo + $20 break-glass." },
+      { name: "description", content: "The global focus crisis, explained. Plus a kiosk-grade phone lockdown teams and families use to take their attention back. From $10/mo. Universal $20 break-glass." },
       { property: "og:title", content: "The Focus Vault — Take your attention back" },
-      { property: "og:description", content: "Why the world can't focus, and the lockdown app fixing it. From $50/year. Stake up to 70% of your plan per session." },
+      { property: "og:description", content: "Why the world can't focus, and the lockdown app fixing it. From $10/month. Universal $20 break-glass fine on every plan." },
       { property: "og:url", content: "/" },
+
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
@@ -133,8 +134,9 @@ function Landing() {
                 Join the waitlist →
               </Link>
               <Link to="/login" className="brutal-border bg-stakes-amber px-6 py-4 mono text-xs font-bold uppercase tracking-widest hover:opacity-90">
-                Lock yourself in · $10/mo
+                Lock yourself in · from $10/mo
               </Link>
+
             </div>
           </div>
 
@@ -236,7 +238,7 @@ function Landing() {
             consequence, not a profit center.
           </p>
 
-          <div className="mt-12 grid gap-6 md:grid-cols-3">
+          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-4">
             {PLANS.map((p) => (
               <div
                 key={p.name}
@@ -319,7 +321,7 @@ function Landing() {
               to="/login"
               className="inline-block brutal-border bg-foreground px-10 py-5 mono text-sm font-bold uppercase tracking-widest text-background hover:opacity-90"
             >
-              Lock myself in · $50/yr
+              Lock myself in · from $10/mo
             </Link>
             <Link
               to="/waitlist"
