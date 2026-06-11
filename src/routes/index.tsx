@@ -40,55 +40,71 @@ const STRUGGLES = [
 
 const PLANS = [
   {
-    name: "SINGLE",
+    name: "SINGLE PASS",
     price: "$50",
     cadence: "/ year",
-    line: "One operator. Solo lockdown.",
+    line: "One operator. Annual lockdown.",
     bullets: [
-      "1 seat. 9-to-5 hard kiosk lock.",
+      "1 seat. Kiosk-grade hard lock.",
       "AI Huddle + daily focus contract.",
-      "Personal stakes up to $35/session (70% of plan).",
-      "Break the vault → 15% to Focus Vault, 85% to charity.",
+      "$20 fine charged instantly to your card on every break-glass attempt.",
+      "AI pre-screener parses every breakout excuse.",
     ],
     cta: { label: "Lock myself in", to: "/login" as const },
     accent: false,
   },
   {
-    name: "FAMILY",
+    name: "FAMILY VAULT",
     price: "$220",
     cadence: "/ year · up to 6 seats",
     line: "Households, partners, parents.",
     bullets: [
-      "6 seats included. Extra seats $35/yr (cap 9).",
-      "Per-member stakes up to $154/session (70% of plan).",
-      "Shared focus windows, lead controls.",
+      "6 seats included.",
+      "Provision Extra Hours Rooms (extension or ephemeral).",
+      "$20 fine billed to the parent admin card on every approved release.",
       "Vouchers vote on every break-glass attempt.",
     ],
-    cta: { label: "Start a family vault", to: "/login" as const },
+    cta: { label: "Start a family vault", to: "/rooms" as const },
     accent: true,
   },
   {
-    name: "COMPANY",
+    name: "CORPORATE SPRINT",
     price: "$350",
     cadence: "/ year · up to 10 seats",
     line: "Startups, agencies, focus-first teams.",
     bullets: [
-      "10 seats included. Extra seats $25/yr, no cap.",
-      "No financial stake — breaks alert the team admin.",
-      "Per-team focus windows + roster controls.",
-      "Admin dashboard, onboarding, partner support.",
+      "10 seats included.",
+      "Live admin telemetry grid + remote lock/unlock.",
+      "$20 fine billed to corporate expense, logged to seat registry.",
+      "Onboarding + partner support.",
     ],
     cta: { label: "Talk to us", to: "/partner" as const },
+    accent: false,
+  },
+  {
+    name: "HARDCORE SOLO",
+    price: "$10",
+    cadence: "/ month",
+    line: "Chronic relapsers. Last-shot mode.",
+    bullets: [
+      "1 seat, month-to-month, highest friction.",
+      "$20 fine PLUS mandatory 10-Voucher verification block.",
+      "No quorum, no release — peers must individually clear you.",
+      "Use when willpower has already failed twice.",
+    ],
+    cta: { label: "Go hardcore", to: "/login" as const },
     accent: false,
   },
 ];
 
 const REVENUE_LINES = [
-  { k: "Single", v: "$50 / year per operator. One seat, personal stakes." },
-  { k: "Family", v: "$220 / year, 6 seats included. +$35 / year per extra seat (cap 9)." },
-  { k: "Company", v: "$350 / year, 10 seats included. +$25 / year per extra seat, no cap." },
-  { k: "Stakes (Single & Family)", v: "Per-session financial stake, up to 70% of the annual plan. Forfeited stakes: 15% to Focus Vault, 85% to charity partners." },
+  { k: "Single Pass", v: "$50 / year per operator. One seat. $20 fine to user card on every break-glass." },
+  { k: "Family Vault", v: "$220 / year, 6 seats included. $20 fine billed to the parent admin card on every approved release." },
+  { k: "Corporate Sprint", v: "$350 / year, 10 seats included. $20 fine billed to corporate expense, logged to seat registry." },
+  { k: "Hardcore Solo", v: "$10 / month. $20 fine + mandatory 10-Voucher verification network block on every breakout." },
+  { k: "Universal $20 Break-Glass", v: "Forfeited fines fund the voucher pool and charity partners. The $20 is the forcing function — every tier, no exceptions." },
 ];
+
 
 function Landing() {
   return (

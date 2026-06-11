@@ -36,6 +36,24 @@ export const markFaceVerified = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ path: z.string().min(1).max(300) }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    const prefix = `${userId}/`;
+    if (!data.path.startsWith(prefix)) {
+      throw new Error("Forbidden: path does not belong to you.");
+    }
+    const filename = data.path.slice(prefix.length);
+    if (!filename || filename.includes("/") || filename.includes("..")) {
+      throw new Error("Forbidden: invalid file path.");
+    }
+    // Verify file exists in storage under the user's prefix using admin client
+    // (storage RLS is not strict enough here, and signed users may bypass list).
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: files, error: listErr } = await supabaseAdmin.storage
+      .from("face-verifications")
+      .list(userId, { search: filename, limit: 100 });
+    if (listErr) throw new Error("Storage check failed.");
+    const exists = (files ?? []).some((f) => f.name === filename);
+    if (!exists) throw new Error("Forbidden: uploaded file not found.");
+
     const { error } = await supabase
       .from("profiles")
       .update({ face_verified_at: new Date().toISOString(), face_image_path: data.path })
@@ -43,3 +61,4 @@ export const markFaceVerified = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
