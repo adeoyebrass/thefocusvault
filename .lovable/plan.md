@@ -1,60 +1,56 @@
+Big batch. I'll ship it in one pass, no real Stripe yet — fines log to DB and the existing $20 break-glass UI stays the same shape.
 
-This is a multi-part build. I'll execute in this order:
+## 1. Pricing & copy (Universal $20 Break-Glass, 4 tiers)
 
-## 1. Enable backend (Lovable Cloud)
-Required for user accounts, vouch records, team rosters, and Stripe webhook persistence. No external setup for you.
+`src/routes/index.tsx` — replace `PLANS` and `REVENUE_LINES`:
+- **Single Pass** — $50/yr, 1 seat, $20 fine to user card.
+- **Family Vault** — $220/yr, up to 6 seats, $20 fine billed to parent admin card on approved release.
+- **Corporate Sprint** — $350/yr, up to 10 seats, $20 fine billed to corporate / logged to seat registry.
+- **Hardcore Solo** — $10/mo, 1 seat, $20 fine + mandatory 10-Voucher verification.
+- Drop all 70%-of-plan stake copy. Universal $20 everywhere.
+- Update hero CTA + final CTA to "Lock in · from $10/mo".
 
-## 2. Authentication
-- Email + password and Google sign-in (Lovable Cloud defaults).
-- `profiles` table (display_name, avatar_url) auto-created via trigger on signup.
-- `/login` and `/signup` routes; `_authenticated` layout guard.
-- Root `onAuthStateChange` for cache invalidation.
+`src/routes/api/chat.ts` — rewrite Plan Advisor prompt for the 4 plans + universal $20 fine; add Hardcore Solo as the monthly hyper-accountability option; remove stake math.
 
-## 3. Vouch system (real, not demo)
-- Tables:
-  - `vouch_votes` — break-glass requests (owner_id, reason, status, created_at)
-  - `vouch_responses` — one row per voucher decision (vote_id, voucher_id, decision, comment)
-  - `team_members` — (lead_id, member_user_id, role) so a lead can add registered users to their roster who become eligible vouchers
-- RLS:
-  - vote owner reads their own votes; vouchers listed in `team_members` read pending votes addressed to them
-  - vouchers insert/update only their own response row
-- `/vouch/$voteId` becomes real: requires auth, looks up vote, lets the user cast yes/no, server-side tally → auto-resolves at quorum (e.g. 3 yes / majority of team)
+## 2. Family Extra Hours Rooms (DB + admin UI)
 
-## 4. Team management upgrade
-- `/team` adds a "Add registered user by email" action that creates a `team_members` row only if a profile exists for that email.
-- 5 free seats; extras = $2/seat/mo. Stored seat count drives Stripe billing.
+Migration adds:
+- `room_type` enum (`extension`, `ephemeral`)
+- `focus_rooms` table: `id`, `owner_id` (parent admin), `title`, `type`, `starts_at`, `ends_at`, `is_active`, timestamps
+- `focus_room_participants` table: `room_id`, `user_id`, unique pair
+- RLS: parents (any authenticated user, scoped by `owner_id = auth.uid()`) manage their own rooms + participants; participants can SELECT rooms they're in. Service role full access.
+- GRANTs to authenticated + service_role.
 
-## 5. Stripe billing (seamless, Lovable-managed)
-- Run `recommend_payment_provider` → expect Stripe recommendation (SaaS subscription).
-- Enable via `enable_stripe_payments`.
-- Products: `Vault Base $10/mo` + metered `Extra Seat $2/seat/mo`.
-- Server fn `createCheckoutSession({ extraSeats })`, webhook at `/api/public/stripe-webhook` upserts `subscriptions` table.
-- "Enter · $10/mo" CTA and `/team` "Upgrade seats" button hit checkout.
+UI: new route `src/routes/rooms.tsx` (under public root, gated by auth state already used on `/friends`-style routes) — parent creates rooms, lists active ones, adds participants by email lookup against `profiles`. Server fns in `src/lib/rooms.functions.ts` with `requireSupabaseAuth`.
 
-## 6. Admin analytics / Voucher Console
-New `/admin` route (gated by `role = 'admin'` via `user_roles` table + `has_role` security-definer function — never store role on profile).
-Panels:
-- Active vaults today, total focus-minutes, break-glass requests last 7d (sparkline)
-- Voucher console table: pending votes with quick-approve/deny
-- Revenue: MRR, active subs, extra-seat count (from `subscriptions` table)
+## 3. Admin Telemetry Grid (live)
 
-## 7. Imagery
-Generate and place:
-- Hero image on `/` (focus/deep-work brutalist photo)
-- Section image on `/huddle` (team huddle abstract)
-- Section image on `/break-glass` (red-glass emergency motif)
-- Section image on `/team` (people grid)
-Use `imagegen` standard quality, save to `src/assets/`, import via ES6.
+`src/routes/admin.tsx` already exists — extend it (or add `src/routes/telemetry.tsx` if cleaner) with a realtime grid:
+- Columns: User, Device Status (🔒/🔓/📵), Active Room, Violation Flags, Remote Action.
+- Data source: join `profiles` + latest `lock_events` + active `focus_rooms` participation + `focus_sessions` violation count.
+- Realtime via `supabase.channel` on `lock_events` + `focus_rooms` (enable both in `supabase_realtime` publication).
+- Buttons (Force Lock / Force Unlock / Ping) call existing server fns; if missing, stub to insert a `lock_events` row with the new state.
+- Offline rule: if last `lock_events` heartbeat > 60s ago, render `OFFLINE — POSSIBLE EVASION` in amber.
+
+Restrict view to `has_role(auth.uid(), 'admin')` server-side.
+
+## 4. Security fixes
+
+**Face verification bypass** — `src/lib/profile.functions.ts` `markFaceVerified`: assert `data.path.startsWith(\`${userId}/\`)`; then `supabaseAdmin.storage.from('face-verifications').list(userId)` and verify the exact object exists; throw 403 otherwise.
+
+**friend_pings recipient overwrite** — migration drops the existing `recipient marks read` UPDATE policy and replaces it with a policy + `BEFORE UPDATE` trigger that raises unless only `read_at` changed (and `read_at` goes from NULL → non-NULL).
+
+## 5. Out of scope this turn
+
+- Real Stripe capture / PaymentIntent routing — UI logs the $20 fine to a new `penalty_records` table only if we have time; otherwise reuse existing `lock_events`. I'll add `penalty_records` (amount_cents default 2000, status, justification, stripe_charge_id nullable) so the schema is ready for Stripe later.
+- Vouch self-approval and friendships column-restriction findings (separate finding, not requested).
+- Mobile/Android kiosk wiring for the new rooms — JS scheduler only.
 
 ## Technical notes
-- Auth: Lovable Cloud (Supabase under the hood), Google + email/password.
-- Roles: separate `user_roles` table + `has_role()` security-definer (mandatory pattern).
-- Server functions for all DB reads/writes via `createServerFn` + `requireSupabaseAuth`.
-- Stripe webhook signature verified with `STRIPE_WEBHOOK_SECRET`.
-- Public assets only — no service-role keys reach the browser.
 
-## Out of scope (will note for follow-up)
-- Native push from `/team` to the Android kiosk (FCM) — separate task.
-- Email invites to non-registered users (would need Resend connector).
+- All new tables: GRANT to authenticated + service_role, RLS on, policies scoped to `auth.uid()` or `has_role`.
+- Realtime: `ALTER PUBLICATION supabase_realtime ADD TABLE public.focus_rooms, public.lock_events;` (lock_events if not already).
+- No Stripe SDK added.
+- No changes to `src/integrations/supabase/*` auto-gen files.
 
-Approve and I'll start with step 1 (enabling Cloud) and proceed straight through.
+Ready to build?
